@@ -195,6 +195,8 @@ ExecStart=/usr/local/bin/sing-box run -c /etc/sing-box/config.json
 Restart=always
 RestartSec=5
 LimitNOFILE=51200
+# 64M 小内存：降低被 OOM killer 选中的概率
+OOMScoreAdjust=-200
 
 [Install]
 WantedBy=multi-user.target
