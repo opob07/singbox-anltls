@@ -55,7 +55,7 @@ IP=$(curl -fsSL -4 --max-time 10 ifconfig.me 2>/dev/null || curl -fsSL -4 --max-
 # --- 下载 sing-box ---
 echo ""
 echo "--- 下载 sing-box ---"
-VERSION=$(curl -fsSL --max-time 20 https://api.github.com/SagerNet/sing-box/releases/latest | grep '"tag_name"' | head -1 | cut -d'"' -f4)
+VERSION=$(curl -fsSL --max-time 20 https://api.github.com/repos/SagerNet/sing-box/releases/latest | grep '"tag_name"' | head -1 | cut -d'"' -f4)
 [ -z "$VERSION" ] && { echo "获取版本失败"; exit 1; }
 echo "最新版本: $VERSION"
 cd /tmp
