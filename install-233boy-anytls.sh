@@ -467,7 +467,8 @@ main() {
     is_core_ver=${is_core_ver#v}
     add anytls auto auto
     # --- 输出 Surge 格式节点 ---
-    _sb_conf=$(ls $is_conf_dir/anytls-*.json 2>/dev/null | head -1)
+    _sb_conf=$(ls $is_conf_dir/ 2>/dev/null | grep -i "^anytls-.*\.json$" | head -1)
+    [[ $_sb_conf ]] && _sb_conf="$is_conf_dir/$_sb_conf"
     if [[ -f $_sb_conf ]]; then
         _sb_port=$(jq -r '.inbounds[0].listen_port' "$_sb_conf" 2>/dev/null)
         _sb_pass=$(jq -r '.inbounds[0].users[0].password' "$_sb_conf" 2>/dev/null)
