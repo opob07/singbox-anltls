@@ -99,9 +99,10 @@ case "$CHOICE" in
     *) PROTO="anytls"; CHOICE=1 ;;
 esac
 
-# 自签证书 (tuic/hy2/anytls 需要)
+# 自签证书 (tuic/hy2/anytls 需要；EC 密钥毫秒级生成，避免 RSA 在小机器上长时间无输出)
 if [ "$PROTO" != "vless" ]; then
-    openssl req -x509 -newkey rsa:2048 -keyout /etc/sing-box/key.pem \
+    openssl req -x509 -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 \
+        -keyout /etc/sing-box/key.pem \
         -out /etc/sing-box/cert.pem -days 3650 -nodes \
         -subj "/CN=${SNI}" >/dev/null 2>&1
     chmod 600 /etc/sing-box/key.pem
