@@ -452,6 +452,18 @@ main() {
     # 默认创建 AnyTLS 配置 (原版为 add reality)
     # 改自 233boy/sing-box install.sh，仅修改默认协议为 AnyTLS，其余未动
     add anytls auto auto
+    # --- 输出 Surge 格式节点 ---
+    _sb_conf=$(ls $is_conf_dir/anytls-*.json 2>/dev/null | head -1)
+    if [[ -f $_sb_conf ]]; then
+        _sb_port=$(jq -r '.inbounds[0].listen_port' "$_sb_conf" 2>/dev/null)
+        _sb_pass=$(jq -r '.inbounds[0].users[0].password' "$_sb_conf" 2>/dev/null)
+        _sb_addr=${ip:-}
+        if [[ $_sb_port && $_sb_port != null && $_sb_pass && $_sb_pass != null && $_sb_addr ]]; then
+            msg "\n------------- Surge -------------"
+            msg "AnyTLS = anytls, $_sb_addr, $_sb_port, password=$_sb_pass, skip-cert-verify=true\n"
+        fi
+        unset _sb_conf _sb_port _sb_pass _sb_addr
+    fi
     # wait for background tasks (e.g., OpenRC service start)
     wait
     # remove tmp dir and exit.
