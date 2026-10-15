@@ -59,7 +59,16 @@ VERSION=$(curl -fsSL --max-time 20 https://api.github.com/repos/SagerNet/sing-bo
 [ -z "$VERSION" ] && { echo "获取版本失败"; exit 1; }
 echo "最新版本: $VERSION"
 cd /tmp
-curl -fsSL --max-time 120 -o sb.tgz "https://github.com/SagerNet/sing-box/releases/download/${VERSION}/sing-box-${VERSION#v}-linux-${SB_ARCH}.tar.gz"
+# 显示进度条防止控制台因长时间无输出断开；失败自动重试
+for i in 1 2 3; do
+    if curl -fSL --progress-bar --max-time 300 -o sb.tgz "https://github.com/SagerNet/sing-box/releases/download/${VERSION}/sing-box-${VERSION#v}-linux-${SB_ARCH}.tar.gz"; then
+        break
+    fi
+    echo "下载失败，重试 ($i/3)..."
+    sleep 3
+    [ "$i" = 3 ] && { echo "下载失败，请检查网络后重试"; exit 1; }
+done
+echo "--- 解压安装 ---"
 tar xzf sb.tgz
 install -m 755 sing-box-${VERSION#v}-linux-${SB_ARCH}/sing-box /usr/local/bin/sing-box
 rm -rf sb.tgz sing-box-${VERSION#v}-linux-${SB_ARCH}
