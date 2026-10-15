@@ -180,6 +180,11 @@ command_args="run -c /etc/sing-box/config.json"
 command_background="yes"
 pidfile="/run/sing-box.pid"
 depend() { need net; after firewall; }
+start_pre() {
+    checkpath -d -m 0755 /run/sing-box 2>/dev/null
+    # 限制 Go 堆内存，64M 机器上防止内存暴涨
+    export GOMEMLIMIT=32MiB
+}
 EOF
     chmod +x /etc/init.d/sing-box
     rc-update add sing-box default >/dev/null 2>&1
@@ -197,6 +202,8 @@ RestartSec=5
 LimitNOFILE=51200
 # 64M 小内存：降低被 OOM killer 选中的概率
 OOMScoreAdjust=-200
+# 限制 Go 堆内存，64M 机器上防止内存暴涨
+Environment=GOMEMLIMIT=32MiB
 
 [Install]
 WantedBy=multi-user.target
