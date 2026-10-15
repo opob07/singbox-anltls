@@ -25,11 +25,14 @@ else
 fi
 echo "系统: $OS / $SB_ARCH"
 
-# --- 依赖 (只装必需的) ---
-echo "--- 安装依赖 ---"
-if [ "$OS" = "alpine" ]; then
+# --- 依赖 (只装必需的，已有则跳过) ---
+if command -v curl >/dev/null 2>&1 && command -v openssl >/dev/null 2>&1; then
+    echo "依赖已就绪，跳过安装"
+elif [ "$OS" = "alpine" ]; then
+    echo "--- 安装依赖 ---"
     apk add --no-cache curl openssl >/dev/null 2>&1
 else
+    echo "--- 安装依赖 ---"
     apt-get update -qq >/dev/null 2>&1
     DEBIAN_FRONTEND=noninteractive apt-get install -y -qq curl openssl >/dev/null 2>&1
 fi
@@ -41,8 +44,13 @@ echo "  1) AnyTLS       (默认, TCP)"
 echo "  2) TUIC         (UDP, 最省内存)"
 echo "  3) VLESS+Reality (TCP, 无需域名证书)"
 echo "  4) Hysteria2    (UDP, 速度快)"
-printf "输入序号 [1]: "
-read -r CHOICE
+printf "输入序号 [1，8秒无输入自动选1]: "
+if read -t 8 -r CHOICE 2>/dev/null; then
+    :
+else
+    echo ""
+    echo "超时，自动选择 AnyTLS"
+fi
 CHOICE=${CHOICE:-1}
 
 # --- 随机参数 ---
