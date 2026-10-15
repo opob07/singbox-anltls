@@ -235,6 +235,14 @@ echo "协议: $PROTO | 端口: $PORT"
 echo ""
 echo "Surge 配置 (复制到 [Proxy] 下):"
 echo "$SURGE"
+# 保存节点信息，供 sb 快捷键查看
+{
+echo "协议: $PROTO | 端口: $PORT | 安装日期: $(date +%F)"
+echo ""
+echo "$SURGE"
+if [ -n "${LINK:-}" ]; then echo ""; echo "$LINK"; fi
+} > /etc/sing-box/node.txt
+chmod 600 /etc/sing-box/node.txt
 if [ -n "${LINK:-}" ]; then
 echo ""
 echo "通用分享链接 (VLESS Reality 建议用此导入):"
@@ -244,3 +252,25 @@ echo ""
 echo "注意: 云防火墙/安全组记得放行 $PORT (UDP 协议选 UDP, TCP 协议选 TCP)"
 echo "内存占用: sing-box 空载约 10-20M，64M 机器够用"
 echo "=========================================="
+
+# --- sb 快捷键 ---
+cat > /usr/local/bin/sb <<'EOF'
+#!/bin/sh
+# sb 快捷键：无参数显示节点信息和状态，有参数透传给 sing-box
+if [ $# -eq 0 ]; then
+    printf -- "--- 服务状态 ---\n"
+    if [ -f /etc/systemd/system/sing-box.service ]; then
+        systemctl is-active sing-box 2>/dev/null || echo "未运行"
+    elif [ -f /etc/init.d/sing-box ]; then
+        rc-service sing-box status 2>/dev/null | head -1
+    fi
+    printf -- "\n--- 节点信息 ---\n"
+    cat /etc/sing-box/node.txt 2>/dev/null || echo "未找到节点信息"
+    printf -- "\n用法: sb [sing-box 参数]，如 sb version\n"
+else
+    exec /usr/local/bin/sing-box "$@"
+fi
+EOF
+chmod +x /usr/local/bin/sb
+echo ""
+echo "快捷键已安装：直接输入 sb 查看节点信息"
