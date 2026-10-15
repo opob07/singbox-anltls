@@ -234,11 +234,10 @@ check_status() {
     else
         [[ ! $is_fail ]] && {
             is_wget=1
-            [[ ! $is_core_file ]] && download core &
-            [[ ! $local_install ]] && download sh &
-            [[ $jq_not_found ]] && download jq &
+            [[ ! $is_core_file ]] && download core
+            [[ ! $local_install ]] && download sh
+            [[ $jq_not_found ]] && download jq
             get_ip
-            wait
             check_status
         }
     fi
@@ -353,12 +352,11 @@ main() {
 
     # install dependent pkg
     if [[ $cmd =~ apk ]]; then
-        # Alpine: force install full versions to replace BusyBox applets
-        apk update &>/dev/null
-        apk add $is_pkg &>/dev/null
+        # Alpine: 64M 内存省着用，--no-cache 不存索引
+        apk --no-cache add $is_pkg &>/dev/null
         [[ $? == 0 ]] && >$is_pkg_ok
     else
-        install_pkg $is_pkg &
+        install_pkg $is_pkg
     fi
 
     # jq
@@ -368,10 +366,11 @@ main() {
         jq_not_found=1
     fi
     # if wget installed. download core, sh, jq, get ip
+    # 64M 机器：串行下载，避免并行 OOM
     [[ $is_wget ]] && {
-        [[ ! $is_core_file ]] && download core &
-        [[ ! $local_install ]] && download sh &
-        [[ $jq_not_found ]] && download jq &
+        [[ ! $is_core_file ]] && download core
+        [[ ! $local_install ]] && download sh
+        [[ $jq_not_found ]] && download jq
         get_ip
     }
 
@@ -448,6 +447,18 @@ main() {
     # create condf dir
     mkdir -p $is_conf_dir
 
+    # 自签证书: init.sh 同款逻辑。原版默认装 reality 不需要证书所以 install.sh 里没有这步,
+    # 但 AnyTLS 的 TLS 配置要引用证书路径, 不先生成的话 key_path/certificate_path 会是空的。
+    is_tls_cer=$is_core_dir/bin/tls.cer
+    is_tls_key=$is_core_dir/bin/tls.key
+    if [[ ! -f $is_tls_cer || ! -f $is_tls_key ]]; then
+        is_tls_tmp=${is_tls_key/key/tmp}
+        $is_core_bin generate tls-keypair tls -m 456 >$is_tls_tmp
+        awk '/BEGIN PRIVATE KEY/,/END PRIVATE KEY/' $is_tls_tmp >$is_tls_key
+        awk '/BEGIN CERTIFICATE/,/END CERTIFICATE/' $is_tls_tmp >$is_tls_cer
+        rm -f $is_tls_tmp
+    fi
+
     load core.sh
     # 默认创建 AnyTLS 配置 (原版为 add reality)
     # 改自 233boy/sing-box install.sh，仅修改默认协议为 AnyTLS，其余未动
@@ -462,8 +473,8 @@ main() {
         _sb_pass=$(jq -r '.inbounds[0].users[0].password' "$_sb_conf" 2>/dev/null)
         _sb_addr=${ip:-}
         if [[ $_sb_port && $_sb_port != null && $_sb_pass && $_sb_pass != null && $_sb_addr ]]; then
-            msg "\n------------- Surge -------------"
-            msg "AnyTLS = anytls, $_sb_addr, $_sb_port, password=$_sb_pass, skip-cert-verify=true\n"
+            echo -e "\n------------- Surge -------------"
+            echo -e "AnyTLS = anytls, $_sb_addr, $_sb_port, password=$_sb_pass, sni=www.bing.com, skip-cert-verify=true\n"
         fi
         unset _sb_conf _sb_port _sb_pass _sb_addr
     fi
