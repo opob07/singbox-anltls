@@ -451,6 +451,9 @@ main() {
     load core.sh
     # 默认创建 AnyTLS 配置 (原版为 add reality)
     # 改自 233boy/sing-box install.sh，仅修改默认协议为 AnyTLS，其余未动
+    # is_core_ver 在后台 download 子shell中设置，父进程取不到；从二进制直接获取
+    [[ ! $is_core_ver ]] && is_core_ver=$($is_core_bin version 2>/dev/null | awk '{print $3}')
+    is_core_ver=${is_core_ver#v}
     add anytls auto auto
     # --- 输出 Surge 格式节点 ---
     _sb_conf=$(ls $is_conf_dir/anytls-*.json 2>/dev/null | head -1)
