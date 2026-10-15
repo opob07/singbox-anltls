@@ -35,35 +35,15 @@ else
 fi
 
 # --- 协议选择 ---
-if [ -n "$SB_CHOICE" ]; then
-    CHOICE="$SB_CHOICE"
-else
-    echo ""
-    echo "选择协议:"
-    echo "  1) AnyTLS       (默认, TCP)"
-    echo "  2) TUIC         (UDP, 最省内存)"
-    echo "  3) VLESS+Reality (TCP, 无需域名证书)"
-    echo "  4) Hysteria2    (UDP, 速度快)"
-    printf "输入序号 [1]: "
-    read -r CHOICE
-    CHOICE=${CHOICE:-1}
-fi
-
-# --- 脆弱控制台：选完协议后自动转入后台，避免断线中断安装 ---
-if [ -z "$SB_DETACHED" ]; then
-    export SB_DETACHED=1 SB_CHOICE="$CHOICE"
-    SCRIPT="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
-    LOG=/tmp/singbox-install.log
-    if command -v setsid >/dev/null 2>&1; then
-        setsid sh "$SCRIPT" > "$LOG" 2>&1 < /dev/null &
-    else
-        nohup sh "$SCRIPT" > "$LOG" 2>&1 < /dev/null &
-    fi
-    echo ""
-    echo "已转入后台安装，断线不影响。"
-    echo "查看进度: tail -f $LOG"
-    exit 0
-fi
+echo ""
+echo "选择协议:"
+echo "  1) AnyTLS       (默认, TCP)"
+echo "  2) TUIC         (UDP, 最省内存)"
+echo "  3) VLESS+Reality (TCP, 无需域名证书)"
+echo "  4) Hysteria2    (UDP, 速度快)"
+printf "输入序号 [1]: "
+read -r CHOICE
+CHOICE=${CHOICE:-1}
 
 # --- 随机参数 ---
 PORT=$(shuf -i 10000-65535 -n 1 2>/dev/null || awk 'BEGIN{srand(); print int(10000+rand()*55535)}')
@@ -92,7 +72,20 @@ for i in 1 2 3; do
     [ "$i" = 3 ] && { echo "下载失败，请检查网络后重试"; exit 1; }
 done
 echo "--- 解压安装 ---"
-tar xzf sb.tgz
+# tar 解压时保持每秒输出，防止控制台空闲超时断线
+tar xzf sb.tgz &
+TAR_PID=$!
+i=0
+while kill -0 $TAR_PID 2>/dev/null; do
+    i=$((i+1))
+    case $((i % 4)) in
+        0) c='-' ;; 1) c='\' ;; 2) c='|' ;; *) c='/' ;;
+    esac
+    printf "\r解压中... %s %ss" "$c" "$i"
+    sleep 1
+done
+if ! wait $TAR_PID; then printf "\n"; echo "解压失败"; exit 1; fi
+printf "\r解压完成      \n"
 install -m 755 sing-box-${VERSION#v}-linux-${SB_ARCH}/sing-box /usr/local/bin/sing-box
 rm -rf sb.tgz sing-box-${VERSION#v}-linux-${SB_ARCH}
 mkdir -p /etc/sing-box
