@@ -1,1 +1,224 @@
-IyEvYmluL3NoCiMgbGlnaHQtc2luZ2JveC5zaCDigJQg6L276YePIHNpbmctYm94IOS4gOmUruiEmuacrCAoNjRNIOWwj+WGheWtmCBWUFMg5Y+v55SoKQojIOaUr+aMgSBBbHBpbmUgLyBEZWJpYW4gLyBVYnVudHXvvIxhbWQ2NCAvIGFybTY077yMc3lzdGVtZCAvIE9wZW5SQwojIOeUqOazle+8mmN1cmwgLWZzU0wgPOWcsOWdgD4vbGlnaHQtc2luZ2JveC5zaCAtbyBzLnNoICYmIHNoIHMuc2gKc2V0IC1lCgpbICIkKGlkIC11KSIgLW5lIDAgXSAmJiB7IGVjaG8gIuivt+eUqCByb290IOi/kOihjCI7IGV4aXQgMTsgfQoKZWNobyAiPT09IOi9u+mHjyBzaW5nLWJveCDkuIDplK7ohJrmnKwgPT09IgoKIyAtLS0g5p625p6EIC0tLQpjYXNlICIkKHVuYW1lIC1tKSIgaW4KICAgIHg4Nl82NHxhbWQ2NCkgU0JfQVJDSD0iYW1kNjQiIDs7CiAgICBhYXJjaDY0fGFybTY0KSBTQl9BUkNIPSJhcm02NCIgOzsKICAgICopIGVjaG8gIuS4jeaUr+aMgeeahOaetuaehDogJCh1bmFtZSAtbSkiOyBleGl0IDEgOzsKZXNhYwoKIyAtLS0g57O757ufIC0tLQppZiBbIC1mIC9ldGMvYWxwaW5lLXJlbGVhc2UgXTsgdGhlbgogICAgT1M9ImFscGluZSIKZWxpZiBbIC1mIC9ldGMvZGViaWFuX3ZlcnNpb24gXTsgdGhlbgogICAgT1M9ImRlYmlhbiIKZWxzZQogICAgZWNobyAi5LuF5pSv5oyBIEFscGluZSAvIERlYmlhbiAvIFVidW50dSI7IGV4aXQgMQpmaQplY2hvICLns7vnu586ICRPUyAvICRTQl9BUkNIIgoKIyAtLS0g5L6d6LWWICjlj6roo4Xlv4XpnIDnmoQpIC0tLQplY2hvICItLS0g5a6J6KOF5L6d6LWWIC0tLSIKaWYgWyAiJE9TIiA9ICJhbHBpbmUiIF07IHRoZW4KICAgIGFwayBhZGQgLS1uby1jYWNoZSBjdXJsIG9wZW5zc2wgPi9kZXYvbnVsbCAyPiYxCmVsc2UKICAgIGFwdC1nZXQgdXBkYXRlIC1xcSA+L2Rldi9udWxsIDI+JjEKICAgIERFQklBTl9GUk9OVEVORD1ub25pbnRlcmFjdGl2ZSBhcHQtZ2V0IGluc3RhbGwgLXkgLXFxIGN1cmwgb3BlbnNzbCA+L2Rldi9udWxsIDI+JjEKZmkKCiMgLS0tIOWNj+iurumAieaLqSAtLS0KZWNobyAiIgplY2hvICLpgInmi6nljY/orq46IgplY2hvICIgIDEpIEFueVRMUyAgICAgICAo6buY6K6kLCBUQ1ApIgplY2hvICIgIDIpIFRVSUMgICAgICAgICAoVURQLCDmnIDnnIHlhoXlrZgpIgplY2hvICIgIDMpIFZMRVNTK1JlYWxpdHkgKFRDUCwg5peg6ZyA5Z+f5ZCN6K+B5LmmKSIKZWNobyAiICA0KSBIeXN0ZXJpYTIgICAgKFVEUCwg6YCf5bqm5b+rKSIKcHJpbnRmICLovpPlhaXluo/lj7cgWzFdOiAiCnJlYWQgLXIgQ0hPSUNFCkNIT0lDRT0ke0NIT0lDRTotMX0KCiMgLS0tIOmaj+acuuWPguaVsCAtLS0KUE9SVD0kKHNodWYgLWkgMTAwMDAtNjU1MzUgLW4gMSAyPi9kZXYvbnVsbCB8fCBhd2sgJ0JFR0lOe3NyYW5kKCk7IHByaW50IGludCgxMDAwMCtyYW5kKCkqNTU1MzUpfScpClVVSUQ9JChjYXQgL3Byb2Mvc3lzL2tlcm5lbC9yYW5kb20vdXVpZCAyPi9kZXYvbnVsbCB8fCBlY2hvICIwMDAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDAiKQpQQVNTV0Q9JChoZWFkIC1jIDEyIC9kZXYvdXJhbmRvbSB8IG9kIC1BbiAtdHgxIHwgdHIgLWQgJyBcbicpClNOST0id3d3LmJpbmcuY29tIgpJUD0kKGN1cmwgLWZzU0wgLTQgLS1tYXgtdGltZSAxMCBpZmNvbmZpZy5tZSAyPi9kZXYvbnVsbCB8fCBjdXJsIC1mc1NMIC00IC0tbWF4LXRpbWUgMTAgaXAuc2IgMj4vZGV2L251bGwgfHwgZWNobyAi5L2g55qE5pyN5Yqh5ZmoSVAiKQoKIyAtLS0g5LiL6L29IHNpbmctYm94IC0tLQplY2hvICIiCmVjaG8gIi0tLSDkuIvovb0gc2luZy1ib3ggLS0tIgpWRVJTSU9OPSQoY3VybCAtZnNTTCAtLW1heC10aW1lIDIwIGh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vU2FnZXJOZXQvc2luZy1ib3gvcmVsZWFzZXMvbGF0ZXN0IHwgZ3JlcCAnInRhZ19uYW1lIicgfCBoZWFkIC0xIHwgY3V0IC1kJyInIC1mNCkKWyAteiAiJFZFUlNJT04iIF0gJiYgeyBlY2hvICLojrflj5bniYjmnKzlpLHotKUiOyBleGl0IDE7IH0KZWNobyAi5pyA5paw54mI5pysOiAkVkVSU0lPTiIKY2QgL3RtcApjdXJsIC1mc1NMIC0tbWF4LXRpbWUgMTIwIC1vIHNiLnRneiAiaHR0cHM6Ly9naXRodWIuY29tL1NhZ2VyTmV0L3NpbmctYm94L3JlbGVhc2VzL2Rvd25sb2FkLyR7VkVSU0lPTn0vc2luZy1ib3gtJHtWRVJTSU9OI3Z9LWxpbnV4LSR7U0JfQVJDSH0udGFyLmd6Igp0YXIgeHpmIHNiLnRnegppbnN0YWxsIC1tIDc1NSBzaW5nLWJveC0ke1ZFUlNJT04jdn0tbGludXgtJHtTQl9BUkNIfS9zaW5nLWJveCAvdXNyL2xvY2FsL2Jpbi9zaW5nLWJveApybSAtcmYgc2IudGd6IHNpbmctYm94LSR7VkVSU0lPTiN2fS1saW51eC0ke1NCX0FSQ0h9Cm1rZGlyIC1wIC9ldGMvc2luZy1ib3gKCiMgLS0tIOeUn+aIkOmFjee9riAtLS0KZWNobyAiLS0tIOeUn+aIkOmFjee9riAtLS0iCmNhc2UgIiRDSE9JQ0UiIGluCiAgICAyKSBQUk9UTz0idHVpYyIgOzsKICAgIDMpIFBST1RPPSJ2bGVzcyIgOzsKICAgIDQpIFBST1RPPSJoeTIiIDs7CiAgICAqKSBQUk9UTz0iYW55dGxzIjsgQ0hPSUNFPTEgOzsKZXNhYwoKIyDoh6rnrb7or4HkuaYgKHR1aWMvaHkyL2FueXRscyDpnIDopoEpCmlmIFsgIiRQUk9UTyIgIT0gInZsZXNzIiBdOyB0aGVuCiAgICBvcGVuc3NsIHJlcSAteDUwOSAtbmV3a2V5IHJzYToyMDQ4IC1rZXlvdXQgL2V0Yy9zaW5nLWJveC9rZXkucGVtIFwKICAgICAgICAtb3V0IC9ldGMvc2luZy1ib3gvY2VydC5wZW0gLWRheXMgMzY1MCAtbm9kZXMgXAogICAgICAgIC1zdWJqICIvQ049JHtTTkl9IiA+L2Rldi9udWxsIDI+JjEKICAgIGNobW9kIDYwMCAvZXRjL3NpbmctYm94L2tleS5wZW0KZmkKCmlmIFsgIiRQUk9UTyIgPSAidHVpYyIgXTsgdGhlbgogICAgY2F0ID4gL2V0Yy9zaW5nLWJveC9jb25maWcuanNvbiA8PEVPRgp7CiAgImxvZyI6IHsgImxldmVsIjogIndhcm4iIH0sCiAgImluYm91bmRzIjogW3sKICAgICJ0eXBlIjogInR1aWMiLCAidGFnIjogInR1aWMtaW4iLAogICAgImxpc3RlbiI6ICI6OiIsICJsaXN0ZW5fcG9ydCI6ICRQT1JULAogICAgInVzZXJzIjogW3sgInV1aWQiOiAiJFVVSUQiLCAicGFzc3dvcmQiOiAiJFBBU1NXRCIgfV0sCiAgICAiY29uZ2VzdGlvbl9jb250cm9sIjogImJiciIsCiAgICAidGxzIjogewogICAgICAiZW5hYmxlZCI6IHRydWUsICJzZXJ2ZXJfbmFtZSI6ICIkU05JIiwgImFscG4iOiBbImgzIl0sCiAgICAgICJjZXJ0aWZpY2F0ZV9wYXRoIjogIi9ldGMvc2luZy1ib3gvY2VydC5wZW0iLAogICAgICAia2V5X3BhdGgiOiAiL2V0Yy9zaW5nLWJveC9rZXkucGVtIgogICAgfQogIH1dLAogICJvdXRib3VuZHMiOiBbeyAidHlwZSI6ICJkaXJlY3QiLCAidGFnIjogImRpcmVjdCIgfV0KfQpFT0YKICAgIFNVUkdFPSJUVUlDID0gdHVpYywgJHtJUH0sICR7UE9SVH0sIHBhc3N3b3JkPSR7UEFTU1dEfSwgdXVpZD0ke1VVSUR9LCBzbmk9JHtTTkl9LCBza2lwLWNlcnQtdmVyaWZ5PXRydWUsIGNvbmdlc3Rpb24tY29udHJvbGxlcj1iYnIsIGFscG49aDMiCmVsaWYgWyAiJFBST1RPIiA9ICJ2bGVzcyIgXTsgdGhlbgogICAgS1A9JCgvdXNyL2xvY2FsL2Jpbi9zaW5nLWJveCBnZW5lcmF0ZSByZWFsaXR5LWtleXBhaXIpCiAgICBQUklWS0VZPSQoZWNobyAiJEtQIiB8IGdyZXAgIlByaXZhdGVLZXkiIHwgYXdrICd7cHJpbnQgJDJ9JykKICAgIFBVQktFWT0kKGVjaG8gIiRLUCIgfCBncmVwICJQdWJsaWNLZXkiIHwgYXdrICd7cHJpbnQgJDJ9JykKICAgIFNIT1JUSUQ9JChoZWFkIC1jIDggL2Rldi91cmFuZG9tIHwgb2QgLUFuIC10eDEgfCB0ciAtZCAnIFxuJykKICAgIERFU1Q9Ind3dy5taWNyb3NvZnQuY29tIgogICAgY2F0ID4gL2V0Yy9zaW5nLWJveC9jb25maWcuanNvbiA8PEVPRgp7CiAgImxvZyI6IHsgImxldmVsIjogIndhcm4iIH0sCiAgImluYm91bmRzIjogW3sKICAgICJ0eXBlIjogInZsZXNzIiwgInRhZyI6ICJ2bGVzcy1pbiIsCiAgICAibGlzdGVuIjogIjo6IiwgImxpc3Rlbl9wb3J0IjogJFBPUlQsCiAgICAidXNlcnMiOiBbeyAidXVpZCI6ICIkVVVJRCIsICJmbG93IjogInh0bHMtcnByeC12aXNpb24iIH1dLAogICAgInRscyI6IHsKICAgICAgImVuYWJsZWQiOiB0cnVlLCAic2VydmVyX25hbWUiOiAiJERFU1QiLAogICAgICAicmVhbGl0eSI6IHsKICAgICAgICAiZW5hYmxlZCI6IHRydWUsCiAgICAgICAgImhhbmRzaGFrZSI6IHsgInNlcnZlciI6ICIkREVTVCIsICJzZXJ2ZXJfcG9ydCI6IDQ0MyB9LAogICAgICAgICJwcml2YXRlX2tleSI6ICIkUFJJVktFWSIsCiAgICAgICAgInNob3J0X2lkIjogWyIkU0hPUlRJRCJdCiAgICAgIH0KICAgIH0KICB9XSwKICAib3V0Ym91bmRzIjogW3sgInR5cGUiOiAiZGlyZWN0IiwgInRhZyI6ICJkaXJlY3QiIH1dCn0KRU9GCiAgICBTVVJHRT0iVkxFU1MgPSB2bGVzcywgJHtJUH0sICR7UE9SVH0sIHVzZXJuYW1lPSR7VVVJRH0sIHRscz10cnVlLCBzbmk9JHtERVNUfSwgZmxvdz14dGxzLXJwcngtdmlzaW9uIgogICAgIyBTdXJnZSDnmoQgVkxFU1MgUmVhbGl0eSDpnIDlj6bloasgcmVhbGl0eSDlhazpkqUvc2hvcnQtaWTvvIzkuIvmlrkgVVJJIOmTvuaOpemAmueUqOWuouaIt+err+WPr+ebtOaOpeWvvOWFpQogICAgTElOSz0idmxlc3M6Ly8ke1VVSUR9QCR7SVB9OiR7UE9SVH0/ZW5jcnlwdGlvbj1ub25lJmZsb3c9eHRscy1ycHJ4LXZpc2lvbiZzZWN1cml0eT1yZWFsaXR5JnNuaT0ke0RFU1R9JmZwPWNocm9tZSZwYms9JHtQVUJLRVl9JnNpZD0ke1NIT1JUSUR9I3Npbmdib3gtdmxlc3MiCmVsaWYgWyAiJFBST1RPIiA9ICJoeTIiIF07IHRoZW4KICAgIGNhdCA+IC9ldGMvc2luZy1ib3gvY29uZmlnLmpzb24gPDxFT0YKewogICJsb2ciOiB7ICJsZXZlbCI6ICJ3YXJuIiB9LAogICJpbmJvdW5kcyI6IFt7CiAgICAidHlwZSI6ICJoeXN0ZXJpYTIiLCAidGFnIjogImh5Mi1pbiIsCiAgICAibGlzdGVuIjogIjo6IiwgImxpc3Rlbl9wb3J0IjogJFBPUlQsCiAgICAidXNlcnMiOiBbeyAicGFzc3dvcmQiOiAiJFBBU1NXRCIgfV0sCiAgICAidGxzIjogewogICAgICAiZW5hYmxlZCI6IHRydWUsICJzZXJ2ZXJfbmFtZSI6ICIkU05JIiwgImFscG4iOiBbImgzIl0sCiAgICAgICJjZXJ0aWZpY2F0ZV9wYXRoIjogIi9ldGMvc2luZy1ib3gvY2VydC5wZW0iLAogICAgICAia2V5X3BhdGgiOiAiL2V0Yy9zaW5nLWJveC9rZXkucGVtIgogICAgfQogIH1dLAogICJvdXRib3VuZHMiOiBbeyAidHlwZSI6ICJkaXJlY3QiLCAidGFnIjogImRpcmVjdCIgfV0KfQpFT0YKICAgIFNVUkdFPSJIWTIgPSBoeXN0ZXJpYTIsICR7SVB9LCAke1BPUlR9LCBwYXNzd29yZD0ke1BBU1NXRH0sIHNuaT0ke1NOSX0sIHNraXAtY2VydC12ZXJpZnk9dHJ1ZSIKZWxzZQogICAgY2F0ID4gL2V0Yy9zaW5nLWJveC9jb25maWcuanNvbiA8PEVPRgp7CiAgImxvZyI6IHsgImxldmVsIjogIndhcm4iIH0sCiAgImluYm91bmRzIjogW3sKICAgICJ0eXBlIjogImFueXRscyIsICJ0YWciOiAiYW55dGxzLWluIiwKICAgICJsaXN0ZW4iOiAiOjoiLCAibGlzdGVuX3BvcnQiOiAkUE9SVCwKICAgICJ1c2VycyI6IFt7ICJwYXNzd29yZCI6ICIkUEFTU1dEIiB9XSwKICAgICJ0bHMiOiB7CiAgICAgICJlbmFibGVkIjogdHJ1ZSwgInNlcnZlcl9uYW1lIjogIiRTTkkiLAogICAgICAiY2VydGlmaWNhdGVfcGF0aCI6ICIvZXRjL3NpbmctYm94L2NlcnQucGVtIiwKICAgICAgImtleV9wYXRoIjogIi9ldGMvc2luZy1ib3gva2V5LnBlbSIKICAgIH0KICB9XSwKICAib3V0Ym91bmRzIjogW3sgInR5cGUiOiAiZGlyZWN0IiwgInRhZyI6ICJkaXJlY3QiIH1dCn0KRU9GCiAgICBTVVJHRT0iQW55VExTID0gYW55dGxzLCAke0lQfSwgJHtQT1JUfSwgcGFzc3dvcmQ9JHtQQVNTV0R9LCBzbmk9JHtTTkl9LCBza2lwLWNlcnQtdmVyaWZ5PXRydWUiCmZpCgojIC0tLSDmnI3liqEgLS0tCmVjaG8gIi0tLSDms6jlhozmnI3liqEgLS0tIgovdXNyL2xvY2FsL2Jpbi9zaW5nLWJveCBjaGVjayAtYyAvZXRjL3NpbmctYm94L2NvbmZpZy5qc29uIHx8IHsgZWNobyAi6YWN572u5qCh6aqM5aSx6LSlIjsgZXhpdCAxOyB9CmlmIFsgIiRPUyIgPSAiYWxwaW5lIiBdOyB0aGVuCiAgICBjYXQgPiAvZXRjL2luaXQuZC9zaW5nLWJveCA8PCdFT0YnCiMhL3NiaW4vb3BlbnJjLXJ1bgpuYW1lPSJzaW5nLWJveCIKY29tbWFuZD0iL3Vzci9sb2NhbC9iaW4vc2luZy1ib3giCmNvbW1hbmRfYXJncz0icnVuIC1jIC9ldGMvc2luZy1ib3gvY29uZmlnLmpzb24iCmNvbW1hbmRfYmFja2dyb3VuZD0ieWVzIgpwaWRmaWxlPSIvcnVuL3NpbmctYm94LnBpZCIKZGVwZW5kKCkgeyBuZWVkIG5ldDsgYWZ0ZXIgZmlyZXdhbGw7IH0KRU9GCiAgICBjaG1vZCAreCAvZXRjL2luaXQuZC9zaW5nLWJveAogICAgcmMtdXBkYXRlIGFkZCBzaW5nLWJveCBkZWZhdWx0ID4vZGV2L251bGwgMj4mMQogICAgcmMtc2VydmljZSBzaW5nLWJveCByZXN0YXJ0ID4vZGV2L251bGwgMj4mMQplbHNlCiAgICBjYXQgPiAvZXRjL3N5c3RlbWQvc3lzdGVtL3NpbmctYm94LnNlcnZpY2UgPDwnRU9GJwpbVW5pdF0KRGVzY3JpcHRpb249c2luZy1ib3gKQWZ0ZXI9bmV0d29yay50YXJnZXQKCltTZXJ2aWNlXQpFeGVjU3RhcnQ9L3Vzci9sb2NhbC9iaW4vc2luZy1ib3ggcnVuIC1jIC9ldGMvc2luZy1ib3gvY29uZmlnLmpzb24KUmVzdGFydD1hbHdheXMKUmVzdGFydFNlYz01CkxpbWl0Tk9GSUxFPTUxMjAwCgpbSW5zdGFsbF0KV2FudGVkQnk9bXVsdGktdXNlci50YXJnZXQKRU9GCiAgICBzeXN0ZW1jdGwgZGFlbW9uLXJlbG9hZAogICAgc3lzdGVtY3RsIGVuYWJsZSAtLW5vdyBzaW5nLWJveCA+L2Rldi9udWxsIDI+JjEKZmkKCiMgLS0tIEJCUiAo5bC96YeP5byAKSAtLS0Kc3lzY3RsIC13IG5ldC5jb3JlLmRlZmF1bHRfcWRpc2M9ZnEgPi9kZXYvbnVsbCAyPiYxCnN5c2N0bCAtdyBuZXQuaXB2NC50Y3BfY29uZ2VzdGlvbl9jb250cm9sPWJiciA+L2Rldi9udWxsIDI+JjEgfHwgdHJ1ZQoKZWNobyAiIgplY2hvICI9PT09PT09PT09PT09PT09IOWuieijheWujOaIkCA9PT09PT09PT09PT09PT09IgplY2hvICLljY/orq46ICRQUk9UTyB8IOerr+WPozogJFBPUlQiCmVjaG8gIiIKZWNobyAiU3VyZ2Ug6YWN572uICjlpI3liLbliLAgW1Byb3h5XSDkuIspOiIKZWNobyAiJFNVUkdFIgppZiBbIC1uICIke0xJTks6LX0iIF07IHRoZW4KZWNobyAiIgplY2hvICLpgJrnlKjliIbkuqvpk77mjqUgKFZMRVNTIFJlYWxpdHkg5bu66K6u55So5q2k5a+85YWlKToiCmVjaG8gIiRMSU5LIgpmaQplY2hvICIiCmVjaG8gIuazqOaEjzog5LqR6Ziy54Gr5aKZL+WuieWFqOe7hOiusOW+l+aUvuihjCAkUE9SVCAoVURQIOWNj+iurumAiSBVRFAsIFRDUCDljY/orq7pgIkgVENQKSIKZWNobyAi5YaF5a2Y5Y2g55SoOiBzaW5nLWJveCDnqbrovb3nuqYgMTAtMjBN77yMNjRNIOacuuWZqOWkn+eUqCIKZWNobyAiPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Igo=
+#!/bin/sh
+# light-singbox.sh — 轻量 sing-box 一键脚本 (64M 小内存 VPS 可用)
+# 支持 Alpine / Debian / Ubuntu，amd64 / arm64，systemd / OpenRC
+# 用法：curl -fsSL <地址>/light-singbox.sh -o s.sh && sh s.sh
+set -e
+
+[ "$(id -u)" -ne 0 ] && { echo "请用 root 运行"; exit 1; }
+
+echo "=== 轻量 sing-box 一键脚本 ==="
+
+# --- 架构 ---
+case "$(uname -m)" in
+    x86_64|amd64) SB_ARCH="amd64" ;;
+    aarch64|arm64) SB_ARCH="arm64" ;;
+    *) echo "不支持的架构: $(uname -m)"; exit 1 ;;
+esac
+
+# --- 系统 ---
+if [ -f /etc/alpine-release ]; then
+    OS="alpine"
+elif [ -f /etc/debian_version ]; then
+    OS="debian"
+else
+    echo "仅支持 Alpine / Debian / Ubuntu"; exit 1
+fi
+echo "系统: $OS / $SB_ARCH"
+
+# --- 依赖 (只装必需的) ---
+echo "--- 安装依赖 ---"
+if [ "$OS" = "alpine" ]; then
+    apk add --no-cache curl openssl >/dev/null 2>&1
+else
+    apt-get update -qq >/dev/null 2>&1
+    DEBIAN_FRONTEND=noninteractive apt-get install -y -qq curl openssl >/dev/null 2>&1
+fi
+
+# --- 协议选择 ---
+echo ""
+echo "选择协议:"
+echo "  1) AnyTLS       (默认, TCP)"
+echo "  2) TUIC         (UDP, 最省内存)"
+echo "  3) VLESS+Reality (TCP, 无需域名证书)"
+echo "  4) Hysteria2    (UDP, 速度快)"
+printf "输入序号 [1]: "
+read -r CHOICE
+CHOICE=${CHOICE:-1}
+
+# --- 随机参数 ---
+PORT=$(shuf -i 10000-65535 -n 1 2>/dev/null || awk 'BEGIN{srand(); print int(10000+rand()*55535)}')
+UUID=$(cat /proc/sys/kernel/random/uuid 2>/dev/null || echo "00000000-0000-0000-0000-000000000000")
+PASSWD=$(head -c 12 /dev/urandom | od -An -tx1 | tr -d ' \n')
+SNI="www.bing.com"
+IP=$(curl -fsSL -4 --max-time 10 ifconfig.me 2>/dev/null || curl -fsSL -4 --max-time 10 ip.sb 2>/dev/null || echo "你的服务器IP")
+
+# --- 下载 sing-box ---
+echo ""
+echo "--- 下载 sing-box ---"
+VERSION=$(curl -fsSL --max-time 20 https://api.github.com/SagerNet/sing-box/releases/latest | grep '"tag_name"' | head -1 | cut -d'"' -f4)
+[ -z "$VERSION" ] && { echo "获取版本失败"; exit 1; }
+echo "最新版本: $VERSION"
+cd /tmp
+curl -fsSL --max-time 120 -o sb.tgz "https://github.com/SagerNet/sing-box/releases/download/${VERSION}/sing-box-${VERSION#v}-linux-${SB_ARCH}.tar.gz"
+tar xzf sb.tgz
+install -m 755 sing-box-${VERSION#v}-linux-${SB_ARCH}/sing-box /usr/local/bin/sing-box
+rm -rf sb.tgz sing-box-${VERSION#v}-linux-${SB_ARCH}
+mkdir -p /etc/sing-box
+
+# --- 生成配置 ---
+echo "--- 生成配置 ---"
+case "$CHOICE" in
+    2) PROTO="tuic" ;;
+    3) PROTO="vless" ;;
+    4) PROTO="hy2" ;;
+    *) PROTO="anytls"; CHOICE=1 ;;
+esac
+
+# 自签证书 (tuic/hy2/anytls 需要)
+if [ "$PROTO" != "vless" ]; then
+    openssl req -x509 -newkey rsa:2048 -keyout /etc/sing-box/key.pem \
+        -out /etc/sing-box/cert.pem -days 3650 -nodes \
+        -subj "/CN=${SNI}" >/dev/null 2>&1
+    chmod 600 /etc/sing-box/key.pem
+fi
+
+if [ "$PROTO" = "tuic" ]; then
+    cat > /etc/sing-box/config.json <<EOF
+{
+  "log": { "level": "warn" },
+  "inbounds": [{
+    "type": "tuic", "tag": "tuic-in",
+    "listen": "::", "listen_port": $PORT,
+    "users": [{ "uuid": "$UUID", "password": "$PASSWD" }],
+    "congestion_control": "bbr",
+    "tls": {
+      "enabled": true, "server_name": "$SNI", "alpn": ["h3"],
+      "certificate_path": "/etc/sing-box/cert.pem",
+      "key_path": "/etc/sing-box/key.pem"
+    }
+  }],
+  "outbounds": [{ "type": "direct", "tag": "direct" }]
+}
+EOF
+    SURGE="TUIC = tuic, ${IP}, ${PORT}, password=${PASSWD}, uuid=${UUID}, sni=${SNI}, skip-cert-verify=true, congestion-controller=bbr, alpn=h3"
+elif [ "$PROTO" = "vless" ]; then
+    KP=$(/usr/local/bin/sing-box generate reality-keypair)
+    PRIVKEY=$(echo "$KP" | grep "PrivateKey" | awk '{print $2}')
+    PUBKEY=$(echo "$KP" | grep "PublicKey" | awk '{print $2}')
+    SHORTID=$(head -c 8 /dev/urandom | od -An -tx1 | tr -d ' \n')
+    DEST="www.microsoft.com"
+    cat > /etc/sing-box/config.json <<EOF
+{
+  "log": { "level": "warn" },
+  "inbounds": [{
+    "type": "vless", "tag": "vless-in",
+    "listen": "::", "listen_port": $PORT,
+    "users": [{ "uuid": "$UUID", "flow": "xtls-rprx-vision" }],
+    "tls": {
+      "enabled": true, "server_name": "$DEST",
+      "reality": {
+        "enabled": true,
+        "handshake": { "server": "$DEST", "server_port": 443 },
+        "private_key": "$PRIVKEY",
+        "short_id": ["$SHORTID"]
+      }
+    }
+  }],
+  "outbounds": [{ "type": "direct", "tag": "direct" }]
+}
+EOF
+    SURGE="VLESS = vless, ${IP}, ${PORT}, username=${UUID}, tls=true, sni=${DEST}, flow=xtls-rprx-vision"
+    # Surge 的 VLESS Reality 需另填 reality 公钥/short-id，下方 URI 链接通用客户端可直接导入
+    LINK="vless://${UUID}@${IP}:${PORT}?encryption=none&flow=xtls-rprx-vision&security=reality&sni=${DEST}&fp=chrome&pbk=${PUBKEY}&sid=${SHORTID}#singbox-vless"
+elif [ "$PROTO" = "hy2" ]; then
+    cat > /etc/sing-box/config.json <<EOF
+{
+  "log": { "level": "warn" },
+  "inbounds": [{
+    "type": "hysteria2", "tag": "hy2-in",
+    "listen": "::", "listen_port": $PORT,
+    "users": [{ "password": "$PASSWD" }],
+    "tls": {
+      "enabled": true, "server_name": "$SNI", "alpn": ["h3"],
+      "certificate_path": "/etc/sing-box/cert.pem",
+      "key_path": "/etc/sing-box/key.pem"
+    }
+  }],
+  "outbounds": [{ "type": "direct", "tag": "direct" }]
+}
+EOF
+    SURGE="HY2 = hysteria2, ${IP}, ${PORT}, password=${PASSWD}, sni=${SNI}, skip-cert-verify=true"
+else
+    cat > /etc/sing-box/config.json <<EOF
+{
+  "log": { "level": "warn" },
+  "inbounds": [{
+    "type": "anytls", "tag": "anytls-in",
+    "listen": "::", "listen_port": $PORT,
+    "users": [{ "password": "$PASSWD" }],
+    "tls": {
+      "enabled": true, "server_name": "$SNI",
+      "certificate_path": "/etc/sing-box/cert.pem",
+      "key_path": "/etc/sing-box/key.pem"
+    }
+  }],
+  "outbounds": [{ "type": "direct", "tag": "direct" }]
+}
+EOF
+    SURGE="AnyTLS = anytls, ${IP}, ${PORT}, password=${PASSWD}, sni=${SNI}, skip-cert-verify=true"
+fi
+
+# --- 服务 ---
+echo "--- 注册服务 ---"
+/usr/local/bin/sing-box check -c /etc/sing-box/config.json || { echo "配置校验失败"; exit 1; }
+if [ "$OS" = "alpine" ]; then
+    cat > /etc/init.d/sing-box <<'EOF'
+#!/sbin/openrc-run
+name="sing-box"
+command="/usr/local/bin/sing-box"
+command_args="run -c /etc/sing-box/config.json"
+command_background="yes"
+pidfile="/run/sing-box.pid"
+depend() { need net; after firewall; }
+EOF
+    chmod +x /etc/init.d/sing-box
+    rc-update add sing-box default >/dev/null 2>&1
+    rc-service sing-box restart >/dev/null 2>&1
+else
+    cat > /etc/systemd/system/sing-box.service <<'EOF'
+[Unit]
+Description=sing-box
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/sing-box run -c /etc/sing-box/config.json
+Restart=always
+RestartSec=5
+LimitNOFILE=51200
+
+[Install]
+WantedBy=multi-user.target
+EOF
+    systemctl daemon-reload
+    systemctl enable --now sing-box >/dev/null 2>&1
+fi
+
+# --- BBR (尽量开) ---
+sysctl -w net.core.default_qdisc=fq >/dev/null 2>&1
+sysctl -w net.ipv4.tcp_congestion_control=bbr >/dev/null 2>&1 || true
+
+echo ""
+echo "================ 安装完成 ================"
+echo "协议: $PROTO | 端口: $PORT"
+echo ""
+echo "Surge 配置 (复制到 [Proxy] 下):"
+echo "$SURGE"
+if [ -n "${LINK:-}" ]; then
+echo ""
+echo "通用分享链接 (VLESS Reality 建议用此导入):"
+echo "$LINK"
+fi
+echo ""
+echo "注意: 云防火墙/安全组记得放行 $PORT (UDP 协议选 UDP, TCP 协议选 TCP)"
+echo "内存占用: sing-box 空载约 10-20M，64M 机器够用"
+echo "=========================================="
