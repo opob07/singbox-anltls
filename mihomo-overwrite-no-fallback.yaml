@@ -110,7 +110,7 @@ rule-providers:
   microsoftcn_domain: {<<: *domain, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/microsoft@cn.mrs"}
   applecn_domain: {<<: *domain, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/apple@cn.mrs"}
   apple_domain: {<<: *domain, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/apple.mrs"}
-  emby_domain: {type: http, interval: 86400, behavior: domain, format: text, url: "https://raw.githubusercontent.com/opob07/singbox-anltls/main/Emby.list"}
+  emby_domain: {type: http, interval: 86400, behavior: classical, format: text, url: "https://raw.githubusercontent.com/opob07/singbox-anltls/main/Emby.list"}
   steamcn_domain: {<<: *domain, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/steam@cn.mrs"}
   cn!_domain: {<<: *domain, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/geolocation-!cn.mrs"}
 
