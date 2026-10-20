@@ -55,10 +55,13 @@ print_surge_line() {
   MODE=$(grep -E '^mode' "$CONF" | head -1 | sed 's/^mode *= *//')
   MAJOR=$(echo "$VER" | cut -d. -f1)
   [ -z "$MAJOR" ] && MAJOR="${SNELL_VER:-6}"
-  # 拼接 Surge 完整参数：tfo 取服务端配置；v6 带 mode；v4+ 开连接复用；ecn 照抄常用写法
+  # 拼接 Surge 完整参数：tfo 取服务端配置（读不到按安装默认值 true）；
+  # v6 带 mode（读不到按服务端缺省 default）；v4+ 开连接复用；ecn 照抄常用写法
+  [ -z "$TFO" ] && TFO="true"
+  [ -z "$MODE" ] && MODE="default"
   PARAMS="version=${MAJOR}"
-  [ -n "$TFO" ] && PARAMS="${PARAMS}, tfo=${TFO}"
-  if [ "$MAJOR" -ge 6 ] 2>/dev/null && [ -n "$MODE" ]; then
+  PARAMS="${PARAMS}, tfo=${TFO}"
+  if [ "$MAJOR" -ge 6 ] 2>/dev/null; then
     PARAMS="${PARAMS}, mode=${MODE}"
   fi
   if [ "$MAJOR" -ge 4 ] 2>/dev/null; then
