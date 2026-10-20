@@ -137,13 +137,17 @@ do_install() {
     SNELL_PORT=$(awk 'BEGIN{srand(); print int(rand()*50001)+10000}')
   fi
   echo "==> 端口: ${SNELL_PORT}"
-  # 依次回答：端口 / 密钥 / obfs / ipv6 / tfo / dns（空行 = 默认值）
-  printf '%s\n%s\n\n\n\n\n\n\n\n\n\n' "${SNELL_PORT}" "${SNELL_PSK:-}" | ./snell.sh "$FULL_VER"
-  rc=$?
+  # 依次回答：端口 / 密钥 / 其余 4 项全部默认；
+  # 上游 viewConfig 结尾强制进主菜单（beforeStartMenu：1 个回车 + 菜单读数），
+  # 多喂 "回车、00、回车、00……" 让菜单走到 00 自动退出（exit 1）。
+  # 安装是否成功以配置文件是否存在为准——菜单退出码恒为 1，不能作为依据。
+  printf '%s\n%s\n\n\n\n\n\n\n00\n\n00\n\n00\n' "${SNELL_PORT}" "${SNELL_PSK:-}" \
+    | ./snell.sh "$FULL_VER" > /tmp/snell-install.log 2>&1
   rm -f snell.sh
-  if [ $rc -ne 0 ]; then
-    echo "安装过程出错（exit $rc）" >&2
-    return $rc
+  if [ ! -f "$CONF" ]; then
+    echo "安装失败：配置文件 $CONF 未生成，日志如下：" >&2
+    tail -25 /tmp/snell-install.log >&2
+    return 1
   fi
   print_surge_line
 }
