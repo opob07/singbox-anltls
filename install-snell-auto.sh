@@ -41,6 +41,18 @@ else
 fi
 chmod +x snell.sh
 
+# 修复上游 bug：带版本号参数安装（./snell.sh x.y.z）会跳过 installSnell()，
+# 导致 /etc/snell/ 目录没被创建、写配置文件失败。先自己建好。
+mkdir -p /etc/snell
+
+# 清理上次失败的残留（二进制已装但配置文件没写出来），否则重装会被拒绝
+if [ -e /usr/local/bin/snell-server ] && [ ! -e /etc/snell/config.conf ]; then
+  echo "==> 检测到上次失败的残留，先清理..."
+  rc-service snell-server stop >/dev/null 2>&1
+  systemctl stop snell-server >/dev/null 2>&1
+  rm -f /usr/local/bin/snell-server
+fi
+
 echo "==> 开始零交互安装 Snell v${FULL_VER} ..."
 # 端口：未指定时 10000~60000 随机
 if [ -z "${SNELL_PORT:-}" ]; then
@@ -54,7 +66,7 @@ rm -f snell.sh
 [ $rc -ne 0 ] && { echo "安装过程出错（exit $rc）" >&2; exit $rc; }
 
 # 从配置文件读出实际端口和密钥，打印 Surge 行
-CONF="/etc/snell/snell-server.conf"
+CONF="/etc/snell/config.conf"
 if [ -f "$CONF" ]; then
   PORT=$(grep -E '^listen' "$CONF" | head -1 | sed 's/.*://;s/,.*//')
   PSK=$(grep -E '^psk' "$CONF" | head -1 | sed 's/^psk *= *//')
