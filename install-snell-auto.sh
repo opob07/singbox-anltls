@@ -21,6 +21,10 @@
 #
 # 注意（NAT 机）：
 #   Snell 监听的是内网端口，客户端要连 NAT 面板映射出去的外部端口（TCP）。
+#
+# 快捷指令：
+#   安装完成后可直接输入 snell 进入 Snell 管理控制台（安装/卸载/改配置/看状态）。
+#   支持传参直达菜单项，如 snell 7 查看配置、snell 8 查看状态。
 
 SNELL_SRC="https://git.io/Snell.sh"
 BIN="/usr/local/bin/snell-server"
@@ -73,6 +77,28 @@ cleanup() {
   mkdir -p /etc/snell
 }
 
+# 安装/刷新 snell 快捷指令（/usr/local/bin/snell → 管理控制台）
+# $1: 已下载的 snell.sh 路径（可选；不给则按需下载）
+ensure_shortcut() {
+  if [ -n "${1:-}" ]; then
+    cp -f "$1" /usr/local/bin/snell
+    chmod +x /usr/local/bin/snell
+    echo "==> 快捷指令已就绪：输入 snell 进入管理控制台"
+  elif [ ! -x /usr/local/bin/snell ]; then
+    echo "==> 安装 snell 快捷指令..."
+    if command -v wget >/dev/null 2>&1; then
+      wget -q -O /usr/local/bin/snell --no-check-certificate "$SNELL_SRC" || return 1
+    elif command -v curl >/dev/null 2>&1; then
+      curl -fsSL -o /usr/local/bin/snell "$SNELL_SRC" || return 1
+    else
+      echo "警告：找不到 wget/curl，快捷指令未安装" >&2
+      return 1
+    fi
+    chmod +x /usr/local/bin/snell
+    echo "==> 快捷指令已就绪：输入 snell 进入管理控制台"
+  fi
+}
+
 do_install() {
   echo "==> 下载 Snell 一键脚本..."
   if command -v wget >/dev/null 2>&1; then
@@ -84,6 +110,7 @@ do_install() {
     return 1
   fi
   chmod +x snell.sh
+  ensure_shortcut snell.sh
 
   # 修复上游 bug：带版本号参数安装（./snell.sh x.y.z）会跳过 installSnell()，
   # 导致 /etc/snell/ 目录没被创建、写配置文件失败。先自己建好。
@@ -112,6 +139,7 @@ if [ "${SNELL_FORCE:-0}" = "1" ]; then
   do_install
 elif [ -e "$BIN" ] && [ -e "$CONF" ]; then
   echo "==> 检测到 Snell 已完整安装，沿用现有配置："
+  ensure_shortcut || true
   print_surge_line
 elif [ -e "$BIN" ] || [ -e "$CONF" ]; then
   echo "==> 检测到损坏的残留安装，自动清理并重装..."
