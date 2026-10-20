@@ -12,6 +12,7 @@
 #   SNELL_VER   4 / 5 / 6，默认 6
 #   SNELL_PORT  监听端口，默认 10000~60000 随机
 #   SNELL_PSK   密钥，默认随机生成（v6 会生成 20 位）
+#   SNELL_FORCE=1  已有安装也强制重装（删二进制+配置，慎用）
 #
 # 注意（NAT 机）：
 #   Snell 监听的是内网端口，客户端要连 NAT 面板映射出去的外部端口（TCP）。
@@ -45,11 +46,20 @@ chmod +x snell.sh
 # 导致 /etc/snell/ 目录没被创建、写配置文件失败。先自己建好。
 mkdir -p /etc/snell
 
-# 清理上次失败的残留（二进制已装但配置文件没写出来），否则重装会被拒绝
-if [ -e /usr/local/bin/snell-server ] && [ ! -e /etc/snell/config.conf ]; then
+# SNELL_FORCE=1：已有安装也强制重装（停服务、删二进制和配置）
+if [ "${SNELL_FORCE:-0}" = "1" ]; then
+  echo "==> 强制重装：清理旧安装..."
+  rc-service snell-server stop >/dev/null 2>&1 || true
+  systemctl stop snell-server >/dev/null 2>&1 || true
+  systemctl disable snell-server >/dev/null 2>&1 || true
+  rm -f /usr/local/bin/snell-server
+  rm -rf /etc/snell
+  mkdir -p /etc/snell
+# 清理失败的残留（二进制已装但配置文件没写出来），否则重装会被拒绝
+elif [ -e /usr/local/bin/snell-server ] && [ ! -e /etc/snell/config.conf ]; then
   echo "==> 检测到上次失败的残留，先清理..."
-  rc-service snell-server stop >/dev/null 2>&1
-  systemctl stop snell-server >/dev/null 2>&1
+  rc-service snell-server stop >/dev/null 2>&1 || true
+  systemctl stop snell-server >/dev/null 2>&1 || true
   rm -f /usr/local/bin/snell-server
 fi
 
