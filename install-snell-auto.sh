@@ -51,8 +51,20 @@ print_surge_line() {
   PORT=$(grep -E '^listen' "$CONF" | head -1 | sed 's/.*://;s/,.*//')
   PSK=$(grep -E '^psk' "$CONF" | head -1 | sed 's/^psk *= *//')
   VER=$(grep -E '^version' "$CONF" | head -1 | sed 's/^version *= *//')
+  TFO=$(grep -E '^tfo' "$CONF" | head -1 | sed 's/^tfo *= *//')
+  MODE=$(grep -E '^mode' "$CONF" | head -1 | sed 's/^mode *= *//')
   MAJOR=$(echo "$VER" | cut -d. -f1)
   [ -z "$MAJOR" ] && MAJOR="${SNELL_VER:-6}"
+  # 拼接 Surge 完整参数：tfo 取服务端配置；v6 带 mode；v4+ 开连接复用；ecn 照抄常用写法
+  PARAMS="version=${MAJOR}"
+  [ -n "$TFO" ] && PARAMS="${PARAMS}, tfo=${TFO}"
+  if [ "$MAJOR" -ge 6 ] 2>/dev/null && [ -n "$MODE" ]; then
+    PARAMS="${PARAMS}, mode=${MODE}"
+  fi
+  if [ "$MAJOR" -ge 4 ] 2>/dev/null; then
+    PARAMS="${PARAMS}, reuse=true"
+  fi
+  PARAMS="${PARAMS}, ecn=true"
   PUBIP=$(curl -s --max-time 8 ifconfig.me 2>/dev/null || echo "<服务器IP>")
   echo
   echo "=============================="
@@ -62,7 +74,7 @@ print_surge_line() {
   echo "  密钥: ${PSK}"
   echo
   echo "Surge 配置行："
-  echo "Snell-${MAJOR} = snell, ${PUBIP}, ${PORT}, psk=${PSK}, version=${MAJOR}"
+  echo "Snell-${MAJOR} = snell, ${PUBIP}, ${PORT}, psk=${PSK}, ${PARAMS}"
   echo "=============================="
   echo "NAT 机请把 ${PUBIP} 换成 NAT 面板给的外部 IP，端口换成映射的外部端口（TCP）。"
 }
