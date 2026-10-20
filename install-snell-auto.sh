@@ -5,10 +5,12 @@
 #
 # 用法：
 #   curl -fsSL https://raw.githubusercontent.com/opob07/singbox-anltls/main/install-snell-auto.sh -o s.sh && sh s.sh
+#   （默认 v6 + 10000~60000 随机端口 + 随机密钥，全程零交互）
+#   SNELL_VER=4 SNELL_PORT=2345 SNELL_PSK=自定义密钥 sh s.sh
 #
 # 环境变量（可选）：
-#   SNELL_VER   4 / 5 / 6，默认 4
-#   SNELL_PORT  监听端口，默认 2345
+#   SNELL_VER   4 / 5 / 6，默认 6
+#   SNELL_PORT  监听端口，默认 10000~60000 随机
 #   SNELL_PSK   密钥，默认随机生成（v6 会生成 20 位）
 #
 # 注意（NAT 机）：
@@ -16,7 +18,7 @@
 
 SNELL_SRC="https://git.io/Snell.sh"
 
-case "${SNELL_VER:-4}" in
+case "${SNELL_VER:-6}" in
   4) FULL_VER="4.1.1" ;;
   5) FULL_VER="5.0.1" ;;
   6) FULL_VER="6.0.0rc2" ;;
@@ -40,8 +42,13 @@ fi
 chmod +x snell.sh
 
 echo "==> 开始零交互安装 Snell v${FULL_VER} ..."
+# 端口：未指定时 10000~60000 随机
+if [ -z "${SNELL_PORT:-}" ]; then
+  SNELL_PORT=$(awk 'BEGIN{srand(); print int(rand()*50001)+10000}')
+fi
+echo "==> 端口: ${SNELL_PORT}"
 # 依次回答：端口 / 密钥 / obfs / ipv6 / tfo / dns（空行 = 默认值）
-printf '%s\n%s\n\n\n\n\n\n\n\n\n\n' "${SNELL_PORT:-}" "${SNELL_PSK:-}" | ./snell.sh "$FULL_VER"
+printf '%s\n%s\n\n\n\n\n\n\n\n\n\n' "${SNELL_PORT}" "${SNELL_PSK:-}" | ./snell.sh "$FULL_VER"
 rc=$?
 rm -f snell.sh
 [ $rc -ne 0 ] && { echo "安装过程出错（exit $rc）" >&2; exit $rc; }
