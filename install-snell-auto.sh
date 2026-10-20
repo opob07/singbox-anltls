@@ -68,7 +68,13 @@ print_surge_line() {
     PARAMS="${PARAMS}, reuse=true"
   fi
   PARAMS="${PARAMS}, ecn=true"
-  PUBIP=$(curl -s --max-time 8 ifconfig.me 2>/dev/null || echo "<服务器IP>")
+  # 公网 IP 默认取 IPv4（curl -4）；取不到再回退到默认路由的地址
+  PUBIP=$(curl -4 -s --max-time 8 ifconfig.me 2>/dev/null \
+    || curl -s --max-time 8 ifconfig.me 2>/dev/null \
+    || echo "<服务器IP>")
+  # Surge 里 IPv6 地址要加方括号
+  SURGE_HOST="$PUBIP"
+  case "$SURGE_HOST" in *:*) SURGE_HOST="[$SURGE_HOST]";; esac
   echo
   echo "=============================="
   echo "Snell 配置信息："
@@ -77,7 +83,7 @@ print_surge_line() {
   echo "  密钥: ${PSK}"
   echo
   echo "Surge 配置行："
-  echo "Snell-${MAJOR} = snell, ${PUBIP}, ${PORT}, psk=${PSK}, ${PARAMS}"
+  echo "Snell-${MAJOR} = snell, ${SURGE_HOST}, ${PORT}, psk=${PSK}, ${PARAMS}"
   echo "=============================="
   echo "NAT 机请把 ${PUBIP} 换成 NAT 面板给的外部 IP，端口换成映射的外部端口（TCP）。"
 }
