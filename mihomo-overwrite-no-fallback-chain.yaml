@@ -3,10 +3,11 @@
 # 机场订阅
 
 # ================== 链式代理（中转 → 落地）使用说明 ==================
-# 1. 本模板用 proxy-providers + override.dialer-proxy 实现链式，
-#    原因：mihomo 的 proxy-groups 本身不支持 dialer-proxy 字段，relay 类型已被官方废弃。
-# 2. 你需要做且只需要做一件事：把下面 proxy-providers → chain_sub → url 换成你自己的机场订阅链接。
-#    （和主订阅同一个链接即可，不用另找中转）
+# 1. 为什么必须用 proxy-providers：mihomo 内核禁止在策略组上写 dialer-proxy
+#    （报错：The group [...] with dialer-proxy configuration is not allowed, please set it directly on the proxy instead），
+#    relay 类型也已被删除，所以 YAML 里唯一的链式做法是 proxy-providers + override.dialer-proxy。
+# 2. 只需要改一行：下面 proxy-providers → chain_sub → url，填你自己在 Sub-Store 里生成的那条订阅链接
+#    （客户端正在用的那条），不要填机场链接。这样链式节点自动跟随订阅更新。
 # 3. 节点会被复制一份，名字带前缀「链-」，例如「链-🇭🇰 香港 01」。
 #    这些副本节点全部设置了 dialer-proxy: 🔗 前置代理，选中它们 = 走链式。
 # 4. 使用方式：在「🔗 前置代理」里选一个中转节点（建议香港/家宽/低延迟），
@@ -83,8 +84,9 @@ dns:
 proxy-providers:
   chain_sub:
     type: http
-    # ↓↓↓ 【必改】填你自己的机场订阅链接（与主订阅同一个即可）↓↓↓
-    url: "https://example.com/api/v1/client/subscribe?token=请替换成你的订阅链接"
+    # ↓↓↓ 填你自己在 Sub-Store 里生成的那条订阅链接（客户端正在用的那条即可），不要填机场链接 ↓↓↓
+    # 这样链式节点会自动跟随订阅更新；填机场原始订阅链接也能用，但会绕过 Sub-Store 的改名/去重
+    url: "https://你的substore域名/api/file/xxxxxxxx?token=你的token"
     # 独立 path，避免和主订阅的 provider 缓存文件撞车
     path: ./providers/chain_sub.yaml
     interval: 86400
