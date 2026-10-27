@@ -1,0 +1,171 @@
+# 必读！！！
+# 此配置为覆写配置模板，不含节点以及订阅配置，不知道用途的不要用。
+# 机场订阅
+
+# ================== 链式代理（中转 → 落地）使用说明 ==================
+# 1. 本模板用 proxy-providers + override.dialer-proxy 实现链式，
+#    原因：mihomo 的 proxy-groups 本身不支持 dialer-proxy 字段，relay 类型已被官方废弃。
+# 2. 你需要做且只需要做一件事：把下面 proxy-providers → chain_sub → url 换成你自己的机场订阅链接。
+#    （和主订阅同一个链接即可，不用另找中转）
+# 3. 节点会被复制一份，名字带前缀「链-」，例如「链-🇭🇰 香港 01」。
+#    这些副本节点全部设置了 dialer-proxy: 🔗 前置代理，选中它们 = 走链式。
+# 4. 使用方式：在「🔗 前置代理」里选一个中转节点（建议香港/家宽/低延迟），
+#    再把需要的分流组（🚀 默认代理 / 🤖 AI / 🐟 漏网之鱼 等）切到「🔗 链式代理」，再在链式代理里选落地节点。
+# 5. 注意：链式要求落地节点能被 TCP 转发，hy2 / tuic / wg 等 UDP 协议节点大概率连不上，
+#    reality / shadowtls 也可能失败，建议落地用 ss / vmess / trojan / vless+tls。
+#    如需自动剔除 UDP 类节点，取消下面 chain_sub 里 exclude-type 那行的注释。
+# 6. 链式会让流量多一跳，速度必然下降，且流量在机场侧算双份（前置+落地）。
+# ====================================================================
+
+# 全局配置 
+mixed-port: 7890
+allow-lan: true
+bind-address: "*"
+ipv6: false
+unified-delay: true
+tcp-concurrent: true
+log-level: info
+keep-alive-idle: 600
+keep-alive-interval: 15
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+external-controller: 0.0.0.0:9090
+secret: ""
+external-ui: ui
+external-ui-url: "https://gh-proxy.com/https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip"
+
+# 嗅探
+sniffer:
+  enable: true
+  sniff:
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true
+    TLS:
+      ports: [443, 8443]
+    QUIC:
+      ports: [443, 8443]
+  skip-domain:
+    - "Mijia Cloud"
+    - "+.push.apple.com"
+
+# 入站
+tun:
+  enable: true
+  stack: mixed   ##如果内核版本大于v1.19.31，此处可以改为自研协议栈 mips ，理论上性能更好。
+  dns-hijack: ["any:53", "tcp://any:53"]
+  auto-route: true
+  auto-redirect: true
+  auto-detect-interface: true
+
+# DNS模块
+dns:
+  enable: true
+  cache-algorithm: arc
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.0/16
+  fake-ip-filter-mode: blacklist
+  fake-ip-filter:
+    - "*"
+    - "+.lan"
+    - "+.local"
+    - "+.market.xiaomi.com"
+  default-nameserver:
+    - 223.5.5.5
+  nameserver:
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+
+# ==================== 链式代理专用：订阅副本（含 dialer-proxy 覆写） ====================
+proxy-providers:
+  chain_sub:
+    type: http
+    # ↓↓↓ 【必改】填你自己的机场订阅链接（与主订阅同一个即可）↓↓↓
+    url: "https://example.com/api/v1/client/subscribe?token=请替换成你的订阅链接"
+    # 独立 path，避免和主订阅的 provider 缓存文件撞车
+    path: ./providers/chain_sub.yaml
+    interval: 86400
+    proxy: DIRECT
+    # 自动剔除 UDP 类协议节点（这些节点无法被前置代理 TCP 转发，选它会连不上）
+    # exclude-type: "hysteria|hysteria2|tuic|wireguard"
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 300
+      timeout: 5000
+      lazy: true
+    # 核心：给副本节点加前缀防重名 + 指定前置代理
+    override:
+      additional-prefix: "链-"
+      dialer-proxy: "🔗 前置代理"
+# ======================================================================================
+
+# 出站策略，根据自己情况调整每个策略里分组排序，增删都可以，比如把美国自动放到第一个，比如删除香港故转，注意别漏掉表情逗号等。
+# 如果相应分组没有筛选到对应的国家，请根据自己节点名字调整筛选关键字。
+# 没有再使用锚点和icon图标，是考虑很多新手修改难度，这样新手修改某个分组更容易些。
+proxy-groups:
+  # ---------- 链式代理相关分组 ----------
+  # 🔗 前置代理：中转/入口。可用任意节点（不含「链-」副本，避免自己套自己）
+  - {name: 🔗 前置代理, type: select, include-all: true, exclude-filter: "^链-"}
+  # 🔗 链式代理：落地/出口，只包含带 dialer-proxy 的副本节点
+  - {name: 🔗 链式代理, type: select, use: [chain_sub]}
+  # 【备选方案】已知节点名时也可用 relay 组（官方已废弃，仅作参考，一般不推荐）
+  # - {name: 🔗 链式(relay), type: relay, proxies: [前置节点名, 落地节点名]}
+  # ------------------------------------
+
+  - {name: 🚀 默认代理, type: select, proxies: [♻️ 自动选择, 🔗 链式代理, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🇰🇷 韩国节点, 🌐 全部节点, DIRECT]}
+  - {name: 🤖 AI, type: select, proxies: [♻️ 自动选择, 🔗 链式代理, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🇰🇷 韩国节点, 🌐 全部节点, DIRECT]}
+  - {name: 🍎 Apple, type: select, proxies: [♻️ 自动选择, 🔗 链式代理, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🇰🇷 韩国节点, 🌐 全部节点, DIRECT]}
+  - {name: 🎬 Emby, type: select, proxies: [♻️ 自动选择, 🔗 链式代理, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇰🇷 韩国节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]}
+  - {name: 🐟 漏网之鱼, type: select, proxies: [🚀 默认代理, ♻️ 自动选择, 🔗 链式代理, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🇰🇷 韩国节点, 🌐 全部节点, DIRECT]}
+  # 各国分组都加了 exclude-filter: "^链-"，避免副本节点混进普通分组造成"重复的两跳"
+  - {name: 🇭🇰 香港节点, type: url-test, tolerance: 20, interval: 300, include-all: true, exclude-filter: "^链-", filter: "(?=.*(港|HK|(?i)Hong))^((?!(台|日|韩|新|深|美)).)*$"}
+  - {name: 🇯🇵 日本节点, type: url-test, tolerance: 20, interval: 300, include-all: true, exclude-filter: "^链-", filter: "(?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美)).)*$"}
+  - {name: 🇸🇬 狮城节点, type: url-test, tolerance: 20, interval: 300, include-all: true, exclude-filter: "^链-", filter: "(?=.*(新加坡|坡|狮城|SG|Singapore))^((?!(台|日|韩|深|美)).)*$"}
+  - {name: 🇺🇲 美国节点, type: url-test, tolerance: 20, interval: 300, include-all: true, exclude-filter: "^链-", filter: "(?=.*(美|US|(?i)States|America))^((?!(港|台|韩|新|日)).)*$"}
+  - {name: 🇰🇷 韩国节点, type: url-test, tolerance: 20, interval: 300, include-all: true, exclude-filter: "^链-", filter: "(?=.*(韩|KR|(?i)Korea))^((?!(港|台|日|新|美)).)*$"}
+  - {name: ♻️ 自动选择, type: url-test, include-all: true, tolerance: 20, interval: 300, exclude-filter: "^链-", filter: "^((?!(DIRECT)).)*$"}
+  - {name: 🌐 全部节点, type: select, include-all: true}
+
+# 规则匹配
+rules:
+  - AND,((RULE-SET,cn!_domain),(DST-PORT,443),(NETWORK,UDP)),REJECT
+  - RULE-SET,private_ip,DIRECT,no-resolve
+  - RULE-SET,private_domain,DIRECT
+  - RULE-SET,ai_domain,🤖 AI
+  - RULE-SET,microsoftcn_domain,DIRECT
+  - RULE-SET,applecn_domain,DIRECT
+  - RULE-SET,apple_domain,🍎 Apple
+  - RULE-SET,emby_domain,🎬 Emby
+  - RULE-SET,steamcn_domain,DIRECT
+  - RULE-SET,cn!_domain,🚀 默认代理
+  - RULE-SET,apple_ip,🍎 Apple
+  - RULE-SET,cn_ip,DIRECT
+  - MATCH,🐟 漏网之鱼
+
+# 规则集
+## type：可选http/file/inline  behavior：可选domain/ipcidr/classical format：可选yaml/text/mrs
+rule-anchor:
+  ip: &ip {type: http, interval: 86400, behavior: ipcidr, format: mrs}
+  domain: &domain {type: http, interval: 86400, behavior: domain, format: mrs}
+  domain_text: &domain_text {type: http, interval: 86400, behavior: domain, format: text}
+
+rule-providers:
+  private_domain: {<<: *domain, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/private.mrs"}
+  ai_domain: {type: http, interval: 86400, behavior: domain, format: yaml, url: "https://ddgksf2013.top/filter/Ai.yaml"}
+  microsoftcn_domain: {<<: *domain, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/microsoft@cn.mrs"}
+  applecn_domain: {<<: *domain, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/apple@cn.mrs"}
+  apple_domain: {<<: *domain, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/apple.mrs"}
+  emby_domain: {type: http, interval: 86400, behavior: classical, format: text, url: "https://raw.githubusercontent.com/opob07/singbox-anltls/main/Emby.list"}
+  steamcn_domain: {<<: *domain, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/steam@cn.mrs"}
+  cn!_domain: {<<: *domain, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/geolocation-!cn.mrs"}
+
+  apple_ip: {<<: *ip, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo-lite/geoip/apple.mrs"}
+  cn_ip: {<<: *ip, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/cn.mrs"}
+  fakeipfilter_cn: {<<: *domain_text, url: "https://raw.githubusercontent.com/qichiyuhub/rule/refs/heads/main/rules/fakeipfilter-cn.list"}
+  fakeipfilter_!cn: {<<: *domain_text, url: "https://raw.githubusercontent.com/qichiyuhub/rule/refs/heads/main/rules/fakeipfilter-!cn.list"}
+  cn_domain: {<<: *domain, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/cn.mrs"}
+  private_ip: {<<: *ip, url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/private.mrs"}
