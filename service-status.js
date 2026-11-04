@@ -2,6 +2,9 @@
 // 检测当前出站节点对 13 个服务的连通性，结果显示在 [Panel] 里。
 // 检测方式按 FlClash（chen08209/FlClash core/service_rules.go）改写：
 // 每个服务用自己的专用接口 + 正文/地区判断，不再只看首页状态码。
+// 所有探测都不带 Cookie（"auto-cookie": false）：Surge 的 $httpClient
+// 默认会自动处理并发送已存 Cookie，Google 会按 Cookie 里的偏好/账号
+// 活动给 gbar 定地区，导致 Gemini 在日本节点上也可能报 CN。
 // 例外：Disney+ 的完整握手需要 Disney 浏览器令牌 + 3 次 POST，
 // 为避免把令牌写进公开仓库，这里只用首页正文里的 countryCode /
 // inSupportedLocation 判断，见 checkDisney。
@@ -138,7 +141,7 @@ function parseTraceLoc(data) {
 }
 
 function httpGet(url, timeoutSec, noRedirect, cb) {
-  var opts = { url: url, timeout: timeoutSec, headers: { "User-Agent": UA } };
+  var opts = { url: url, timeout: timeoutSec, headers: { "User-Agent": UA }, "auto-cookie": false };
   if (noRedirect) opts["auto-redirect"] = false;
   $httpClient.get(opts, function (error, response, data) {
     cb(error, response, bodyText(data));
@@ -614,7 +617,7 @@ function runService(idx) {
 
 function checkIp() {
   $httpClient.get(
-    { url: "https://api.ipify.org", timeout: 8 },
+    { url: "https://api.ipify.org", timeout: 8, "auto-cookie": false },
     function (error, response, data) {
       if (!error && response && response.status === 200 && data) {
         exitIp = String(data).trim();
