@@ -1,13 +1,10 @@
 // 服务状态面板脚本 · Surge generic script
-// 检测当前出站节点对 13 个服务的连通性，结果显示在 [Panel] 里。
+// 检测当前出站节点对 7 个服务的连通性，结果显示在 [Panel] 里。
 // 检测方式按 FlClash（chen08209/FlClash core/service_rules.go）改写：
 // 每个服务用自己的专用接口 + 正文/地区判断，不再只看首页状态码。
 // 所有探测都不带 Cookie（"auto-cookie": false）：Surge 的 $httpClient
 // 默认会自动处理并发送已存 Cookie，Google 会按 Cookie 里的偏好/账号
 // 活动给 gbar 定地区，导致 Gemini 在日本节点上也可能报 CN。
-// 例外：Disney+ 的完整握手需要 Disney 浏览器令牌 + 3 次 POST，
-// 为避免把令牌写进公开仓库，这里只用首页正文里的 countryCode /
-// inSupportedLocation 判断，见 checkDisney。
 // 第一行用 $surge.selectGroupDetails() 取 select 策略组的选中节点。
 // ES5 写法，无 async/await，无箭头函数，无模板字符串，兼容 JavaScriptCore 引擎。
 
@@ -21,13 +18,7 @@ var SERVICES = [
   { name: "ChatGPT", kind: "chatgpt" },
   { name: "Claude", kind: "claude" },
   { name: "Gemini", kind: "gemini" },
-  { name: "Netflix", kind: "netflix" },
-  { name: "Disney+", kind: "disney" },
-  { name: "Prime Video", kind: "prime" },
-  { name: "Spotify", kind: "spotify" },
   { name: "TikTok", kind: "tiktok" },
-  { name: "Discord", kind: "discord" },
-  { name: "Bilibili", kind: "bilibili" }
 ];
 
 var CLAUDE_BLOCKED = ["AF", "BY", "CN", "CU", "HK", "IR", "KP", "MO", "RU", "SY"];
@@ -357,135 +348,6 @@ function checkGemini(svc, cb) {
   });
 }
 
-function parseNetflixRedirectRegion(location) {
-  var m = /netflix\.com\/([A-Za-z]{2})(?:-|[/?])/i.exec(String(location || ""));
-  if (m) return normalizeRegion(m[1]);
-  m = /\/([A-Za-z]{2})-[A-Za-z]{2}\/title/i.exec(String(location || ""));
-  if (m) return normalizeRegion(m[1]);
-  return "";
-}
-
-function checkNetflixTitles(cb) {
-  var first = null;
-  var second = null;
-  var done = false;
-  function decide() {
-    if (!first || !second || done) return;
-    done = true;
-    if (first.error && second.error) { cb({ state: "fail", note: "请求失败" }); return; }
-    if (first.status === 404 && second.status === 404) {
-      cb({ state: "partial", note: "仅自制剧" });
-      return;
-    }
-    if (first.status === 403 || second.status === 403) {
-      cb({ state: "partial", note: "地区不支持" });
-      return;
-    }
-    if (first.status === 200 || first.status === 301 || second.status === 200 || second.status === 301) {
-      httpGet("https://www.netflix.com/title/80018499", 8, true, function (error3, response3, data3) {
-        var region = "";
-        if (!error3 && response3) {
-          region = parseNetflixRedirectRegion(getHeader(response3, "Location"));
-        }
-        cb({ state: "ok", note: region ? "解锁区域 " + region : "" });
-      });
-      return;
-    }
-    cb(statusResult(first.status || second.status));
-  }
-  httpGet("https://www.netflix.com/title/81280792", 8, false, function (error, response, data) {
-    first = { error: !!error, status: response ? response.status : 0 };
-    decide();
-  });
-  httpGet("https://www.netflix.com/title/70143836", 8, false, function (error, response, data) {
-    second = { error: !!error, status: response ? response.status : 0 };
-    decide();
-  });
-}
-
-function checkNetflix(svc, cb) {
-  httpGet("https://api.fast.com/netflix/speedtest/v2?https=true&token=YXNkZmFzZGxmbnNkYWZoYXNkZmhrYWxm&urlCount=5", 8, false, function (error, response, data) {
-    var status = response ? response.status : 0;
-    var payload = null;
-    var country = "";
-    if (!error && status === 403) { cb({ state: "fail", note: "已被屏蔽" }); return; }
-    if (!error && status >= 200 && status < 300) {
-      try {
-        payload = JSON.parse(data);
-      } catch (e) {
-        payload = null;
-      }
-      if (payload && payload.targets && payload.targets.length > 0 && payload.targets[0].location) {
-        country = normalizeRegion(payload.targets[0].location.country || "");
-        if (country) { cb({ state: "ok", note: "解锁区域 " + country }); return; }
-      }
-    }
-    checkNetflixTitles(cb);
-  });
-}
-
-// Disney+：FlClash 的完整做法是注册设备、换 token、再查会话地区，
-// 需要 Disney 发给浏览器的公开令牌 + 3 次 POST；为避免把令牌写进
-// 公开仓库，这里只读首页正文里的 countryCode / inSupportedLocation。
-function checkDisney(svc, cb) {
-  httpGet("https://www.disneyplus.com/", 8, false, function (error, response, data) {
-    var status = response ? response.status : 0;
-    var raw = firstMatch(data, /"countryCode"\s*:\s*"([^"]+)"/);
-    var region = normalizeRegion(raw);
-    var supported = firstMatch(data, /"inSupportedLocation"\s*:\s*(false|true)/);
-    if (error) { cb({ state: "fail", note: "请求失败" }); return; }
-    if (containsText(data, "disney+ is not available")) {
-      cb({ state: "partial", note: "地区不支持" + (region ? " (" + region + ")" : "") });
-      return;
-    }
-    if (supported === "false") {
-      cb({ state: "partial", note: "地区不支持/未上线" + (region ? " (" + region + ")" : "") });
-      return;
-    }
-    if (supported === "true") {
-      cb({ state: "ok", note: region ? "地区 " + region : "" });
-      return;
-    }
-    if (region) {
-      cb({ state: "ok", note: "地区 " + region });
-      return;
-    }
-    cb(statusResult(status));
-  });
-}
-
-function checkPrime(svc, cb) {
-  httpGet("https://www.primevideo.com", 8, false, function (error, response, data) {
-    var raw = firstMatch(data, /"currentTerritory":"([^"]+)"/);
-    var region = "";
-    if (error) { cb({ state: "fail", note: "请求失败" }); return; }
-    if (containsText(data, "isServiceRestricted")) {
-      cb({ state: "partial", note: "地区不支持" });
-      return;
-    }
-    if (raw) {
-      region = normalizeRegion(raw);
-      if (region) { cb({ state: "ok", note: "地区 " + region }); return; }
-    }
-    cb({ state: "fail", note: "无地区信息" });
-  });
-}
-
-function checkSpotify(svc, cb) {
-  httpGet("https://www.spotify.com/api/content/v1/country-selector?platform=web&format=json", 8, false, function (error, response, data) {
-    var status = response ? response.status : 0;
-    var region = normalizeRegion(firstMatch(data, /"countryCode"\s*:\s*"([^"]+)"/));
-    if (error) { cb({ state: "fail", note: "请求失败" }); return; }
-    if (status === 403 || status === 451) { cb({ state: "partial", note: "地区不支持" + (region ? " (" + region + ")" : "") }); return; }
-    if (status < 200 || status >= 300) { cb(statusResult(status)); return; }
-    if (containsText(data, "not available in your country")) {
-      cb({ state: "partial", note: "地区不支持" + (region ? " (" + region + ")" : "") });
-      return;
-    }
-    cb({ state: "ok", note: region ? "地区 " + region : "" });
-  });
-}
-
 function checkTikTok(svc, cb) {
   httpGet("https://www.tiktok.com/", 8, false, function (error, response, data) {
     var status = response ? response.status : 0;
@@ -501,44 +363,6 @@ function checkTikTok(svc, cb) {
   });
 }
 
-function checkDiscord(svc, cb) {
-  httpGet("https://discord.com/api/v9/auth/location-metadata", 8, false, function (error, response, data) {
-    var status = response ? response.status : 0;
-    var r;
-    var region;
-    if (error) { cb({ state: "fail", note: "请求失败" }); return; }
-    r = statusResult(status);
-    if (r.state !== "ok") { cb(r); return; }
-    region = normalizeRegion(firstMatch(data, /"country_code"\s*:\s*"([^"]+)"/));
-    cb({ state: "ok", note: region ? "地区 " + region : "" });
-  });
-}
-
-function parseBilibiliCode(body) {
-  return firstMatch(String(body || ""), /"code"\s*:\s*(-?\d+)/);
-}
-
-function checkBilibili(svc, cb) {
-  var firstUrl = "https://api.bilibili.com/pgc/player/web/playurl?avid=82846771&qn=0&type=&otype=json&ep_id=307247&fourk=1&fnver=0&fnval=16&module=bangumi";
-  var secondUrl = "https://api.bilibili.com/pgc/player/web/playurl?avid=18281381&cid=29892777&qn=0&type=&otype=json&ep_id=183799&fourk=1&fnver=0&fnval=16&module=bangumi";
-  httpGet(firstUrl, 8, false, function (error, response, data) {
-    var code = parseBilibiliCode(data);
-    if (error) { cb({ state: "fail", note: "请求失败" }); return; }
-    if (code === "0") { cb({ state: "ok", note: "地区 CN" }); return; }
-    if (code === "-10403") {
-      httpGet(secondUrl, 8, false, function (error2, response2, data2) {
-        var code2 = parseBilibiliCode(data2);
-        if (error2) { cb({ state: "fail", note: "请求失败" }); return; }
-        if (code2 === "0") { cb({ state: "ok", note: "港澳台片源" }); return; }
-        if (code2 === "-10403") { cb({ state: "partial", note: "地区不支持" }); return; }
-        cb({ state: "fail", note: code2 ? "code " + code2 : "无返回码" });
-      });
-      return;
-    }
-    cb({ state: "fail", note: code ? "code " + code : "无返回码" });
-  });
-}
-
 var CHECKERS = {
   google: checkReachable("https://www.google.com/generate_204"),
   github: checkReachable("https://github.com/"),
@@ -546,13 +370,7 @@ var CHECKERS = {
   chatgpt: checkChatGpt,
   claude: checkClaude,
   gemini: checkGemini,
-  netflix: checkNetflix,
-  disney: checkDisney,
-  prime: checkPrime,
-  spotify: checkSpotify,
   tiktok: checkTikTok,
-  discord: checkDiscord,
-  bilibili: checkBilibili
 };
 
 function finish() {
