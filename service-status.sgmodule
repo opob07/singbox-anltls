@@ -1,5 +1,5 @@
 #!name=服务状态
-#!desc=在 Surge 策略页面板中检测当前节点对 Google、GitHub、YouTube、ChatGPT、Claude、Gemini、Netflix、Disney+、Prime Video、Spotify、TikTok、Discord、Bilibili 的连通性，顶部显示当前节点名（取自 select 策略组选中项）和出口 IP。点面板刷新重新检测。Netflix 一行按片源状态区分：可用 / 仅自制剧 / 不可用；Claude 按 FlClash 方式查 cdn-cgi/trace 的 loc 地区，地区在封锁名单即地区不支持；其余按 HTTP 状态判断，不是完整的地区解锁检测；各服务按 Surge 规则分流，走了 DIRECT 的服务测的是直连而非节点。
+#!desc=在 Surge 策略页面板中检测当前节点对 Google、GitHub、YouTube、ChatGPT、Claude、Gemini、Netflix、Disney+、Prime Video、Spotify、TikTok、Discord、Bilibili 的连通性，顶部显示当前节点名（取自 select 策略组选中项）和出口 IP，每行带服务图标和地区信息。点面板刷新重新检测。检测方式按 FlClash：各服务用专用接口 + 正文/地区判断（Claude 查 cdn-cgi/trace 的 loc、Gemini 查地区标记、Netflix 先查 fast.com 再查两个片名、ChatGPT 查 iOS 接口 + trace + 合规接口、Bilibili 查两集 playurl 等），地区在封锁名单即地区不支持；Disney+ 未用完整握手（需浏览器令牌），只读首页正文判断；各服务按 Surge 规则分流，走了 DIRECT 的服务测的是直连而非节点。
 #!author=Muse
 
 [Panel]
@@ -7,4 +7,4 @@
 
 [Script]
 # 如需指定显示哪个策略组的节点，在下面一行末尾加 ,argument=group=策略组名（例如 ,argument=group=Proxy）；不指定则自动按 Proxy/默认代理/第一个有具体节点的策略组选取，嵌套策略组会解析到底层节点。
-service-status = type=generic,timeout=20,script-path=https://raw.githubusercontent.com/opob07/singbox-anltls/main/service-status.js
+service-status = type=generic,timeout=30,script-path=https://raw.githubusercontent.com/opob07/singbox-anltls/main/service-status.js
