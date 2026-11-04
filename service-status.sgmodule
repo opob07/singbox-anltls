@@ -1,5 +1,5 @@
 #!name=服务状态
-#!desc=在 Surge 策略页面板中检测当前节点对 Google、GitHub、YouTube、ChatGPT、Claude、Gemini、Netflix、Disney+、Prime Video、Spotify、TikTok、Discord、Bilibili 的连通性，顶部显示当前节点名（取自 select 策略组选中项）和出口 IP。点面板刷新重新检测。Netflix 一行按片源状态区分：可用 / 仅自制剧 / 不可用，其余按 HTTP 状态判断，不是完整的地区解锁检测；各服务按 Surge 规则分流，走了 DIRECT 的服务测的是直连而非节点。
+#!desc=在 Surge 策略页面板中检测当前节点对 Google、GitHub、YouTube、ChatGPT、Claude、Gemini、Netflix、Disney+、Prime Video、Spotify、TikTok、Discord、Bilibili 的连通性，顶部显示当前节点名（取自 select 策略组选中项）和出口 IP。点面板刷新重新检测。Netflix 一行按片源状态区分：可用 / 仅自制剧 / 不可用；Claude 按 FlClash 方式查 cdn-cgi/trace 的 loc 地区，地区在封锁名单即地区不支持；其余按 HTTP 状态判断，不是完整的地区解锁检测；各服务按 Surge 规则分流，走了 DIRECT 的服务测的是直连而非节点。
 #!author=Muse
 
 [Panel]

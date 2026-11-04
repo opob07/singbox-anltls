@@ -3,6 +3,7 @@
 // 第一行用 $surge.selectGroupDetails() 取 select 策略组的选中节点，
 // 显示在出口 IP 上面；Surge 里没有单一的“当前节点”，规则模式下
 // 每个域名走的策略组可能不同，这里显示的是所选策略组解析到底的节点。
+// Claude 不查首页，查 https://claude.ai/cdn-cgi/trace 的 loc= 地区（FlClash 做法）。
 // 写法按 Surge 官方手册：$httpClient.get 回调 + $done({title, content, style})
 // ES5 写法，无 async/await，无箭头函数，无模板字符串，兼容 JavaScriptCore 引擎。
 
@@ -13,7 +14,7 @@ var SERVICES = [
   { name: "GitHub", url: "https://api.github.com", kind: "generic" },
   { name: "YouTube", url: "https://www.youtube.com/", kind: "generic" },
   { name: "ChatGPT", url: "https://chatgpt.com/", kind: "generic" },
-  { name: "Claude", url: "https://claude.ai/", kind: "generic" },
+  { name: "Claude", url: "https://claude.ai/cdn-cgi/trace", kind: "claude" },
   { name: "Gemini", url: "https://gemini.google.com/", kind: "generic" },
   { name: "Netflix", url: "https://www.netflix.com/title/81215567", kind: "netflix" },
   { name: "Disney+", url: "https://www.disneyplus.com/", kind: "generic" },
@@ -130,7 +131,33 @@ function parseNetflixRegion(response) {
   return "";
 }
 
-function judge(idx, error, response, ms) {
+// Claude 按 FlClash 的做法：不查首页，查 Cloudflare 诊断接口
+// https://claude.ai/cdn-cgi/trace，取正文里 loc= 一行的地区码，
+// 在封锁名单里即地区不支持。FlClash 源码 core/service_rules.go checkClaude。
+var CLAUDE_BLOCKED = ["AF", "BY", "CN", "CU", "HK", "IR", "KP", "MO", "RU", "SY"];
+
+function parseTraceLoc(data) {
+  var lines;
+  var j;
+  var line;
+  if (!data) return "";
+  lines = String(data).split("\n");
+  for (j = 0; j < lines.length; j++) {
+    line = lines[j].replace(/^\s+|\s+$/g, "");
+    if (line.indexOf("loc=") === 0) return line.substring(4).replace(/^\s+|\s+$/g, "").toUpperCase();
+  }
+  return "";
+}
+
+function isBlockedRegion(loc, list) {
+  var j;
+  for (j = 0; j < list.length; j++) {
+    if (list[j] === loc) return true;
+  }
+  return false;
+}
+
+function judge(idx, error, response, data, ms) {
   var svc = SERVICES[idx];
   var status = response ? response.status : 0;
   var region = "";
@@ -146,6 +173,24 @@ function judge(idx, error, response, ms) {
     } else {
       r.note = "HTTP " + status;
     }
+    results[idx] = r;
+    return;
+  }
+  if (svc.kind === "claude") {
+    region = parseTraceLoc(data);
+    if (!region) {
+      r.note = status ? "无地区信息 (HTTP " + status + ")" : "无地区信息";
+      results[idx] = r;
+      return;
+    }
+    if (isBlockedRegion(region, CLAUDE_BLOCKED)) {
+      r.state = "partial";
+      r.note = "地区不支持 (" + region + ")";
+      results[idx] = r;
+      return;
+    }
+    r.state = "ok";
+    r.note = "地区 " + region;
     results[idx] = r;
     return;
   }
@@ -236,7 +281,7 @@ function checkOne(idx) {
   $httpClient.get(
     { url: SERVICES[idx].url, timeout: 8, headers: { "User-Agent": UA } },
     function (error, response, data) {
-      judge(idx, error, response, Date.now() - start);
+      judge(idx, error, response, data, Date.now() - start);
       pending--;
       if (pending <= 0) finish();
     }
