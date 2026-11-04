@@ -12,18 +12,18 @@
 var UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 
 var SERVICES = [
-  { name: "Google", icon: "🔍", kind: "google" },
+  { name: "Google", icon: "ⓖ", kind: "google" },
   { name: "GitHub", icon: "🐙", kind: "github" },
   { name: "YouTube", icon: "▶️", kind: "youtube" },
   { name: "ChatGPT", icon: "🤖", kind: "chatgpt" },
-  { name: "Claude", icon: "✳️", kind: "claude" },
+  { name: "Claude", icon: "🔶", kind: "claude" },
   { name: "Gemini", icon: "✨", kind: "gemini" },
-  { name: "Netflix", icon: "🍿", kind: "netflix" },
+  { name: "Netflix", icon: "🅽", kind: "netflix" },
   { name: "Disney+", icon: "🏰", kind: "disney" },
   { name: "Prime Video", icon: "🎞️", kind: "prime" },
-  { name: "Spotify", icon: "🎵", kind: "spotify" },
+  { name: "Spotify", icon: "🟢", kind: "spotify" },
   { name: "TikTok", icon: "🎶", kind: "tiktok" },
-  { name: "Discord", icon: "💬", kind: "discord" },
+  { name: "Discord", icon: "🎮", kind: "discord" },
   { name: "Bilibili", icon: "📺", kind: "bilibili" }
 ];
 
