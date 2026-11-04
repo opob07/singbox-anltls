@@ -1,9 +1,10 @@
 #!name=服务状态
-#!desc=在 Surge 策略页面板中检测当前节点对 Google、GitHub、YouTube、ChatGPT、Claude、Gemini、Netflix、Disney+、Prime Video 的连通性，并显示出口 IP。点面板刷新重新检测。Netflix 一行按片源状态区分：可用 / 仅自制剧 / 不可用，其余按 HTTP 状态判断，不是完整的地区解锁检测。
+#!desc=在 Surge 策略页面板中检测当前节点对 Google、GitHub、YouTube、ChatGPT、Claude、Gemini、Netflix、Disney+、Prime Video、Spotify、TikTok、Discord、Bilibili 的连通性，顶部显示当前节点名（取自 select 策略组选中项）和出口 IP。点面板刷新重新检测。Netflix 一行按片源状态区分：可用 / 仅自制剧 / 不可用，其余按 HTTP 状态判断，不是完整的地区解锁检测；各服务按 Surge 规则分流，走了 DIRECT 的服务测的是直连而非节点。
 #!author=Muse
 
 [Panel]
 服务状态 = title="服务状态",content="点刷新开始检测",style=info,script-name=service-status,update-interval=1
 
 [Script]
+# 如需指定显示哪个策略组的节点，在下面一行末尾加 ,argument=group=策略组名（例如 ,argument=group=Proxy）；不指定则自动按 Proxy/默认代理/第一个有具体节点的策略组选取，嵌套策略组会解析到底层节点。
 service-status = type=generic,timeout=20,script-path=https://raw.githubusercontent.com/opob07/singbox-anltls/main/service-status.js

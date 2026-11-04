@@ -1,5 +1,8 @@
 // 服务状态面板脚本 · Surge generic script
-// 检测当前出站节点对 9 个服务的连通性，结果显示在 [Panel] 里。
+// 检测当前出站节点对 13 个服务的连通性，结果显示在 [Panel] 里。
+// 第一行用 $surge.selectGroupDetails() 取 select 策略组的选中节点，
+// 显示在出口 IP 上面；Surge 里没有单一的“当前节点”，规则模式下
+// 每个域名走的策略组可能不同，这里显示的是所选策略组解析到底的节点。
 // 写法按 Surge 官方手册：$httpClient.get 回调 + $done({title, content, style})
 // ES5 写法，无 async/await，无箭头函数，无模板字符串，兼容 JavaScriptCore 引擎。
 
@@ -14,7 +17,11 @@ var SERVICES = [
   { name: "Gemini", url: "https://gemini.google.com/", kind: "generic" },
   { name: "Netflix", url: "https://www.netflix.com/title/81215567", kind: "netflix" },
   { name: "Disney+", url: "https://www.disneyplus.com/", kind: "generic" },
-  { name: "Prime Video", url: "https://www.primevideo.com/", kind: "generic" }
+  { name: "Prime Video", url: "https://www.primevideo.com/", kind: "generic" },
+  { name: "Spotify", url: "https://www.spotify.com/", kind: "generic" },
+  { name: "TikTok", url: "https://www.tiktok.com/", kind: "generic" },
+  { name: "Discord", url: "https://discord.com/", kind: "generic" },
+  { name: "Bilibili", url: "https://www.bilibili.com/", kind: "generic" }
 ];
 
 var results = [];
@@ -26,6 +33,87 @@ var i;
 
 for (i = 0; i < SERVICES.length; i++) {
   results.push({ state: "fail", ms: 0, note: "待检测" });
+}
+
+function getArgumentValue(key) {
+  var parts;
+  var j;
+  var kv;
+  try {
+    if (typeof $argument === "undefined" || !$argument) return "";
+    if (typeof $argument === "object") return $argument[key] || "";
+    parts = String($argument).split("&");
+    for (j = 0; j < parts.length; j++) {
+      kv = parts[j].split("=");
+      if (kv.length >= 2 && kv[0] === key) return decodeURIComponent(kv.slice(1).join("="));
+    }
+  } catch (e) {
+    return "";
+  }
+  return "";
+}
+
+function resolveChain(groupName, decisions) {
+  var cur = decisions[groupName];
+  var seen = {};
+  var steps = [groupName];
+  while (cur && decisions[cur] && !seen[cur]) {
+    seen[cur] = true;
+    steps.push(cur);
+    cur = decisions[cur];
+  }
+  return { leaf: cur || "", steps: steps };
+}
+
+function resolveNodeLabel() {
+  var details;
+  var decisions;
+  var wanted;
+  var preferred = ["Proxy", "默认代理", "FINAL", "Final", "GLOBAL", "Global", "♻️自动选择", "自动选择", "主策略"];
+  var p;
+  var k;
+  var val;
+  var chain;
+  try {
+    if (typeof $surge === "undefined" || !$surge.selectGroupDetails) return "";
+    details = $surge.selectGroupDetails();
+    if (!details || !details.decisions) return "";
+    decisions = details.decisions;
+    wanted = getArgumentValue("group");
+    if (wanted && decisions[wanted]) {
+      chain = resolveChain(wanted, decisions);
+      if (chain.leaf) return chain.leaf + (chain.steps.length > 1 ? " · " + chain.steps.join(" → ") : "");
+      return "";
+    }
+    for (p = 0; p < preferred.length; p++) {
+      if (decisions[preferred[p]]) {
+        chain = resolveChain(preferred[p], decisions);
+        if (chain.leaf) return chain.leaf + (chain.steps.length > 1 ? " · " + chain.steps.join(" → ") : "");
+      }
+    }
+    for (k in decisions) {
+      if (!decisions.hasOwnProperty(k)) continue;
+      val = decisions[k];
+      if (val && val !== "DIRECT" && val !== "REJECT" && !decisions[val]) {
+        chain = resolveChain(k, decisions);
+        if (chain.leaf) return chain.leaf + (chain.steps.length > 1 ? " · " + chain.steps.join(" → ") : "");
+      }
+    }
+    for (k in decisions) {
+      if (!decisions.hasOwnProperty(k)) continue;
+      if (decisions[k]) return decisions[k];
+    }
+  } catch (e) {
+    return "";
+  }
+  return "";
+}
+
+var nodeLabel = "";
+try {
+  nodeLabel = resolveNodeLabel();
+} catch (e) {
+  nodeLabel = "";
 }
 
 function parseNetflixRegion(response) {
@@ -109,6 +197,11 @@ function finish() {
   for (j = 0; j < results.length; j++) {
     if (results[j].state === "ok") okCount++;
   }
+  if (nodeLabel) {
+    lines.push("当前节点: " + nodeLabel);
+  } else {
+    lines.push("当前节点: 未知");
+  }
   if (exitIp) {
     if (exitCountry) {
       lines.push("出口 IP: " + exitIp + " (" + exitCountry + ")");
@@ -132,8 +225,8 @@ function finish() {
   }
   title = "服务状态 " + okCount + "/" + SERVICES.length + " 可用";
   if (okCount === SERVICES.length) style = "good";
-  else if (okCount >= 6) style = "info";
-  else if (okCount >= 3) style = "alert";
+  else if (okCount >= 9) style = "info";
+  else if (okCount >= 5) style = "alert";
   else style = "error";
   $done({ title: title, content: lines.join("\n"), style: style });
 }
