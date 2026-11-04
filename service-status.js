@@ -15,19 +15,19 @@
 var UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 
 var SERVICES = [
-  { name: "Google", icon: "ⓖ", kind: "google" },
-  { name: "GitHub", icon: "🐙", kind: "github" },
-  { name: "YouTube", icon: "▶️", kind: "youtube" },
-  { name: "ChatGPT", icon: "🤖", kind: "chatgpt" },
-  { name: "Claude", icon: "🔶", kind: "claude" },
-  { name: "Gemini", icon: "✨", kind: "gemini" },
-  { name: "Netflix", icon: "🅽", kind: "netflix" },
-  { name: "Disney+", icon: "🏰", kind: "disney" },
-  { name: "Prime Video", icon: "🎞️", kind: "prime" },
-  { name: "Spotify", icon: "🟢", kind: "spotify" },
-  { name: "TikTok", icon: "🎶", kind: "tiktok" },
-  { name: "Discord", icon: "🎮", kind: "discord" },
-  { name: "Bilibili", icon: "📺", kind: "bilibili" }
+  { name: "Google", kind: "google" },
+  { name: "GitHub", kind: "github" },
+  { name: "YouTube", kind: "youtube" },
+  { name: "ChatGPT", kind: "chatgpt" },
+  { name: "Claude", kind: "claude" },
+  { name: "Gemini", kind: "gemini" },
+  { name: "Netflix", kind: "netflix" },
+  { name: "Disney+", kind: "disney" },
+  { name: "Prime Video", kind: "prime" },
+  { name: "Spotify", kind: "spotify" },
+  { name: "TikTok", kind: "tiktok" },
+  { name: "Discord", kind: "discord" },
+  { name: "Bilibili", kind: "bilibili" }
 ];
 
 var CLAUDE_BLOCKED = ["AF", "BY", "CN", "CU", "HK", "IR", "KP", "MO", "RU", "SY"];
@@ -586,9 +586,9 @@ function finish() {
     else if (results[j].state === "partial") icon = "⚠️";
     else icon = "❌";
     if (results[j].note) {
-      lines.push(icon + " " + SERVICES[j].icon + " " + SERVICES[j].name + " " + results[j].ms + "ms · " + results[j].note);
+      lines.push(icon + " " + SERVICES[j].name + " " + results[j].ms + "ms · " + results[j].note);
     } else {
-      lines.push(icon + " " + SERVICES[j].icon + " " + SERVICES[j].name + " " + results[j].ms + "ms");
+      lines.push(icon + " " + SERVICES[j].name + " " + results[j].ms + "ms");
     }
   }
   title = "服务状态 " + okCount + "/" + SERVICES.length + " 可用";
