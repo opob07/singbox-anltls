@@ -1,5 +1,5 @@
 #!name=服务状态
-#!desc=在 Surge 策略页面板中检测当前节点对 Google、GitHub、YouTube、ChatGPT、Claude、Gemini、TikTok 的连通性，顶部显示当前节点名（取自 select 策略组选中项）和出口 IP，每行显示地区信息。点面板刷新重新检测。检测方式按 FlClash：各服务用专用接口 + 正文/地区判断（Claude 查 cdn-cgi/trace 的 loc、Gemini 查地区标记、ChatGPT 查 iOS 接口 + trace + 合规接口等），地区在封锁名单即地区不支持；所有探测都不带 Cookie；各服务按 Surge 规则分流，走了 DIRECT 的服务测的是直连而非节点。
+#!desc=在 Surge 策略页面板中检测当前节点对 Google、GitHub、YouTube、ChatGPT、Claude、Gemini、TikTok、DeepSeek、Grok 的连通性，顶部显示当前节点名（取自 select 策略组选中项）和出口 IP，每行显示地区信息。点面板刷新重新检测。检测方式按 FlClash：各服务用专用接口 + 正文/地区判断（Claude 查 cdn-cgi/trace 的 loc、Gemini 查地区标记、ChatGPT 查 iOS 接口 + trace + 合规接口、Grok 查 cdn-cgi/trace 的 loc、DeepSeek 查 API 根地址的 401 未带密钥回包等），地区在封锁名单即地区不支持；所有探测都不带 Cookie；各服务按 Surge 规则分流，走了 DIRECT 的服务测的是直连而非节点。
 #!author=Muse
 
 [Panel]

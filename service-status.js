@@ -1,5 +1,5 @@
 // 服务状态面板脚本 · Surge generic script
-// 检测当前出站节点对 7 个服务的连通性，结果显示在 [Panel] 里。
+// 检测当前出站节点对 9 个服务的连通性，结果显示在 [Panel] 里。
 // 检测方式按 FlClash（chen08209/FlClash core/service_rules.go）改写：
 // 每个服务用自己的专用接口 + 正文/地区判断，不再只看首页状态码。
 // 所有探测都不带 Cookie（"auto-cookie": false）：Surge 的 $httpClient
@@ -19,6 +19,8 @@ var SERVICES = [
   { name: "Claude", kind: "claude" },
   { name: "Gemini", kind: "gemini" },
   { name: "TikTok", kind: "tiktok" },
+  { name: "DeepSeek", kind: "deepseek" },
+  { name: "Grok", kind: "grok" }
 ];
 
 var CLAUDE_BLOCKED = ["AF", "BY", "CN", "CU", "HK", "IR", "KP", "MO", "RU", "SY"];
@@ -363,6 +365,37 @@ function checkTikTok(svc, cb) {
   });
 }
 
+// DeepSeek：FlClash 里没有这一项。查 API 根地址，不带密钥时
+// 回 401 + "Authentication Fails (missing key)" 即 API 可达；
+// chat.deepseek.com 网页版在 VM 实测回 202 空正文，信号不干净，不用。
+function checkDeepSeek(svc, cb) {
+  httpGet("https://api.deepseek.com/", 8, false, function (error, response, data) {
+    var status = response ? response.status : 0;
+    if (error) { cb({ state: "fail", note: "请求失败" }); return; }
+    if (status === 401 && containsText(data, "Authentication Fails")) {
+      cb({ state: "ok", note: "" });
+      return;
+    }
+    cb(statusResult(status));
+  });
+}
+
+// Grok：FlClash 里没有这一项。grok.com 在 Cloudflare 后面，
+// 与 Claude 同法查 cdn-cgi/trace 的 loc= 地区；Grok 没有已知的
+// 封锁名单，有 loc 即算可用，只显示地区，不判地区不支持。
+function checkGrok(svc, cb) {
+  httpGet("https://grok.com/cdn-cgi/trace", 8, false, function (error, response, data) {
+    var status = response ? response.status : 0;
+    var region = parseTraceLoc(data);
+    if (error) { cb({ state: "fail", note: "请求失败" }); return; }
+    if (!region) {
+      cb({ state: "fail", note: status ? "无地区信息 (HTTP " + status + ")" : "无地区信息" });
+      return;
+    }
+    cb({ state: "ok", note: "地区 " + region });
+  });
+}
+
 var CHECKERS = {
   google: checkReachable("https://www.google.com/generate_204"),
   github: checkReachable("https://github.com/"),
@@ -371,6 +404,8 @@ var CHECKERS = {
   claude: checkClaude,
   gemini: checkGemini,
   tiktok: checkTikTok,
+  deepseek: checkDeepSeek,
+  grok: checkGrok
 };
 
 function finish() {
